@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Timeline</title>
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #f0f0f0;
+      --popup-bg: white;
+      --popup-border: #ddd;
+      --text-color: #333;
+      --hover-shadow: rgba(0, 0, 0, 0.2);
+    }
+  
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--secondary-color);
+    }
+  
+    .timeline-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      position: relative;
+      padding: 40px 0;
+      max-width: 100%;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  
+    .timeline-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #ccc;
+      z-index: 0;
+      transform: translateY(-50%);
+    }
+  
+    .timeline-step {
+      position: relative;
+      text-align: center;
+      cursor: pointer;
+      z-index: 1;
+    }
+  
+    .timeline-step .circle {
+      width: 40px;
+      height: 40px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      margin: 0 auto;
+      box-shadow: 0 4px 6px var(--hover-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+  
+    .timeline-step:hover .circle {
+      transform: scale(1.1);
+      box-shadow: 0 8px 12px var(--hover-shadow);
+    }
+  
+    .timeline-popup {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--popup-bg);
+      border: 1px solid var(--popup-border);
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      box-shadow: 0 4px 8px var(--hover-shadow);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      max-width: calc(100vw - 20px);
+      z-index: 10;
+      text-align: left;
+    }
+  
+    .timeline-step:hover .timeline-popup {
+      opacity: 1;
+      visibility: visible;
+    }
+  
+    .timeline-step .timeline-popup::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 8px;
+      border-style: solid;
+      border-color: var(--popup-bg) transparent transparent transparent;
+    }
+  
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: bold;
+    }
+  
+    a:hover {
+      text-decoration: underline;
+    }
+  
+    @media (max-width: 600px) {
+      .timeline-container {
+        flex-direction: column;
+        gap: 30px;
+      }
+  
+      .timeline-line {
+        height: auto;
+        width: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Interactive Timeline</h1>
+  <div class="timeline-container">
+    <div class="timeline-line"></div>
+    <div class="timeline-step">
+      <div class="circle">1</div>
+      <div class="timeline-popup">
+        <strong>Start Here</strong><br>
+        <a href="https://example.com/docs/start" target="_blank">Opportunity Manager</a>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">2</div>
+      <div class="timeline-popup">
+        <strong>Middle Step</strong><br>
+        <a href="https://example.com/docs/middle" target="_blank">Project Lead</a>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">3</div>
+      <div class="timeline-popup">
+        <strong>Finish Line</strong><br>
+        <a href="https://example.com/docs/finish" target="_blank">Financial Analyst</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.timeline-step').forEach(step => {
+      step.addEventListener('mouseenter', () => {
+        const popup = step.querySelector('.timeline-popup');
+        const rect = popup.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+
+        if (rect.right > viewportWidth) {
+          popup.style.left = 'auto';
+          popup.style.right = '0';
+          popup.style.transform = 'translateX(-10%)';
+        } else if (rect.left < 0) {
+          popup.style.left = '0';
+          popup.style.right = 'auto';
+          popup.style.transform = 'translateX(10%)';
+        }
+      });
+
+      step.addEventListener('mouseleave', () => {
+        const popup = step.querySelector('.timeline-popup');
+        popup.style.left = '50%';
+        popup.style.right = 'auto';
+        popup.style.transform = 'translateX(-50%)';
+      });
+    });
+  </script>
+</body>
+</html>
