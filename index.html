@@ -3,187 +3,301 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Timeline</title>
+  <title>Resizable Stacked Timelines</title>
   <style>
     :root {
-      --primary-color: #4CAF50;
-      --secondary-color: #f0f0f0;
+      --primary-color-1: #1B998B; /* Accessible green */
+      --primary-color-2: #E63946; /* Accessible red */
+      --primary-color-3: #457B9D; /* Accessible blue */
+      --primary-color-4: #F4A261; /* Accessible orange */
+      --secondary-color: #f9f9f9;
       --popup-bg: white;
       --popup-border: #ddd;
       --text-color: #333;
       --hover-shadow: rgba(0, 0, 0, 0.2);
     }
-  
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 20px;
       background-color: var(--secondary-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-  
+
     .timeline-container {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 50px;
+      gap: 60px;
       position: relative;
-      padding: 40px 0;
-      max-width: 100%;
+      padding: 50px 100px;
+      width: 100%;
+      max-width: 1200px;
       overflow-x: auto;
       white-space: nowrap;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px; /* Space between timelines */
     }
-  
+
     .timeline-line {
       position: absolute;
       top: 50%;
       left: 0;
       right: 0;
-      height: 4px;
+      height: 3px;
       background: #ccc;
       z-index: 0;
       transform: translateY(-50%);
     }
-  
+
     .timeline-step {
       position: relative;
       text-align: center;
       cursor: pointer;
       z-index: 1;
     }
-  
+
     .timeline-step .circle {
       width: 40px;
       height: 40px;
-      background: var(--primary-color);
       border-radius: 50%;
       margin: 0 auto;
-      box-shadow: 0 4px 6px var(--hover-shadow);
+      box-shadow: 0 2px 4px var(--hover-shadow);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: bold;
+      font-size: 0.9rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-  
-    .timeline-step:hover .circle {
-      transform: scale(1.1);
-      box-shadow: 0 8px 12px var(--hover-shadow);
-    }
-  
-    .timeline-popup {
+
+    .timeline-popup-above,
+    .timeline-popup-below {
       position: absolute;
-      bottom: 70px;
-      left: 50%;
-      transform: translateX(-50%);
       background: var(--popup-bg);
       border: 1px solid var(--popup-border);
       border-radius: 8px;
-      padding: 10px 15px;
-      font-size: 0.9rem;
+      padding: 8px 12px;
+      font-size: 0.85rem;
       color: var(--text-color);
       box-shadow: 0 4px 8px var(--hover-shadow);
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s ease, visibility 0.3s ease;
-      max-width: calc(100vw - 20px);
+      max-width: 200px;
+      text-align: center;
       z-index: 10;
-      text-align: left;
     }
-  
-    .timeline-step:hover .timeline-popup {
+
+    .timeline-popup-above {
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .timeline-popup-below {
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .timeline-step:hover .circle {
+      transform: scale(1.1);
+      box-shadow: 0 6px 8px var(--hover-shadow);
+    }
+
+    .timeline-step:hover .timeline-popup-above,
+    .timeline-step:hover .timeline-popup-below {
       opacity: 1;
       visibility: visible;
     }
-  
-    .timeline-step .timeline-popup::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 8px;
-      border-style: solid;
-      border-color: var(--popup-bg) transparent transparent transparent;
+
+    /* Unique colors for each timeline */
+    .timeline-container:nth-of-type(1) .circle {
+      background: var(--primary-color-1);
     }
-  
-    a {
-      color: var(--primary-color);
-      text-decoration: none;
-      font-weight: bold;
+
+    .timeline-container:nth-of-type(2) .circle {
+      background: var(--primary-color-2);
     }
-  
-    a:hover {
-      text-decoration: underline;
+
+    .timeline-container:nth-of-type(3) .circle {
+      background: var(--primary-color-3);
     }
-  
-    @media (max-width: 600px) {
+
+    .timeline-container:nth-of-type(4) .circle {
+      background: var(--primary-color-4);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
       .timeline-container {
-        flex-direction: column;
-        gap: 30px;
+        padding: 40px 60px;
+        gap: 40px;
       }
-  
-      .timeline-line {
-        height: auto;
-        width: 4px;
-        left: 50%;
-        transform: translateX(-50%);
+
+      .timeline-step .circle {
+        width: 30px;
+        height: 30px;
+        font-size: 0.75rem;
+      }
+
+      .timeline-popup-above,
+      .timeline-popup-below {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+        max-width: 150px;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Interactive Timeline</h1>
+
+  <!-- First Timeline -->
   <div class="timeline-container">
     <div class="timeline-line"></div>
     <div class="timeline-step">
       <div class="circle">1</div>
-      <div class="timeline-popup">
-        <strong>Start Here</strong><br>
-        <a href="https://example.com/docs/start" target="_blank">Opportunity Manager</a>
-      </div>
+      <div class="timeline-popup-above">Above Node 1</div>
+      <div class="timeline-popup-below">Below Node 1</div>
     </div>
     <div class="timeline-step">
       <div class="circle">2</div>
-      <div class="timeline-popup">
-        <strong>Middle Step</strong><br>
-        <a href="https://example.com/docs/middle" target="_blank">Project Lead</a>
-      </div>
+      <div class="timeline-popup-above">Above Node 2</div>
+      <div class="timeline-popup-below">Below Node 2</div>
     </div>
     <div class="timeline-step">
       <div class="circle">3</div>
-      <div class="timeline-popup">
-        <strong>Finish Line</strong><br>
-        <a href="https://example.com/docs/finish" target="_blank">Financial Analyst</a>
-      </div>
+      <div class="timeline-popup-above">Above Node 3</div>
+      <div class="timeline-popup-below">Below Node 3</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">4</div>
+      <div class="timeline-popup-above">Above Node 4</div>
+      <div class="timeline-popup-below">Below Node 4</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">5</div>
+      <div class="timeline-popup-above">Above Node 5</div>
+      <div class="timeline-popup-below">Below Node 5</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">6</div>
+      <div class="timeline-popup-above">Above Node 6</div>
+      <div class="timeline-popup-below">Below Node 6</div>
     </div>
   </div>
 
-  <script>
-    document.querySelectorAll('.timeline-step').forEach(step => {
-      step.addEventListener('mouseenter', () => {
-        const popup = step.querySelector('.timeline-popup');
-        const rect = popup.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
+  <!-- Second Timeline -->
+  <div class="timeline-container">
+    <div class="timeline-line"></div>
+    <div class="timeline-step">
+      <div class="circle">1</div>
+      <div class="timeline-popup-above">Above Node 1</div>
+      <div class="timeline-popup-below">Below Node 1</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">2</div>
+      <div class="timeline-popup-above">Above Node 2</div>
+      <div class="timeline-popup-below">Below Node 2</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">3</div>
+      <div class="timeline-popup-above">Above Node 3</div>
+      <div class="timeline-popup-below">Below Node 3</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">4</div>
+      <div class="timeline-popup-above">Above Node 4</div>
+      <div class="timeline-popup-below">Below Node 4</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">5</div>
+      <div class="timeline-popup-above">Above Node 5</div>
+      <div class="timeline-popup-below">Below Node 5</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">6</div>
+      <div class="timeline-popup-above">Above Node 6</div>
+      <div class="timeline-popup-below">Below Node 6</div>
+    </div>
+  </div>
 
-        if (rect.right > viewportWidth) {
-          popup.style.left = 'auto';
-          popup.style.right = '0';
-          popup.style.transform = 'translateX(-10%)';
-        } else if (rect.left < 0) {
-          popup.style.left = '0';
-          popup.style.right = 'auto';
-          popup.style.transform = 'translateX(10%)';
-        }
-      });
+  <!-- Third Timeline -->
+  <div class="timeline-container">
+    <div class="timeline-line"></div>
+    <div class="timeline-step">
+      <div class="circle">1</div>
+      <div class="timeline-popup-above">Above Node 1</div>
+      <div class="timeline-popup-below">Below Node 1</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">2</div>
+      <div class="timeline-popup-above">Above Node 2</div>
+      <div class="timeline-popup-below">Below Node 2</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">3</div>
+      <div class="timeline-popup-above">Above Node 3</div>
+      <div class="timeline-popup-below">Below Node 3</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">4</div>
+      <div class="timeline-popup-above">Above Node 4</div>
+      <div class="timeline-popup-below">Below Node 4</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">5</div>
+      <div class="timeline-popup-above">Above Node 5</div>
+      <div class="timeline-popup-below">Below Node 5</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">6</div>
+      <div class="timeline-popup-above">Above Node 6</div>
+      <div class="timeline-popup-below">Below Node 6</div>
+    </div>
+  </div>
 
-      step.addEventListener('mouseleave', () => {
-        const popup = step.querySelector('.timeline-popup');
-        popup.style.left = '50%';
-        popup.style.right = 'auto';
-        popup.style.transform = 'translateX(-50%)';
-      });
-    });
-  </script>
+  <!-- Fourth Timeline -->
+  <div class="timeline-container">
+    <div class="timeline-line"></div>
+    <div class="timeline-step">
+      <div class="circle">1</div>
+      <div class="timeline-popup-above">Above Node 1</div>
+      <div class="timeline-popup-below">Below Node 1</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">2</div>
+      <div class="timeline-popup-above">Above Node 2</div>
+      <div class="timeline-popup-below">Below Node 2</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">3</div>
+      <div class="timeline-popup-above">Above Node 3</div>
+      <div class="timeline-popup-below">Below Node 3</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">4</div>
+      <div class="timeline-popup-above">Above Node 4</div>
+      <div class="timeline-popup-below">Below Node 4</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">5</div>
+      <div class="timeline-popup-above">Above Node 5</div>
+      <div class="timeline-popup-below">Below Node 5</div>
+    </div>
+    <div class="timeline-step">
+      <div class="circle">6</div>
+      <div class="timeline-popup-above">Above Node 6</div>
+      <div class="timeline-popup-below">Below Node 6</div>
+    </div>
+  </div>
+
 </body>
 </html>
