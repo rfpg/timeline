@@ -16,7 +16,7 @@
       --text-color: #333;
       --hover-shadow: rgba(0, 0, 0, 0.2);
     }
-
+  
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
@@ -26,14 +26,14 @@
       flex-direction: column;
       align-items: center;
     }
-
+  
     .timeline-container {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 40px;
+      gap: 60px; /* Increased gap */
       position: relative;
-      padding: 60px; /* Increased padding */
+      padding: 80px;
       width: 90%;
       max-width: 1200px;
       overflow-x: auto;
@@ -41,13 +41,21 @@
       background-color: #fff;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 40px; /* Increased margin for better separation */
+      margin-bottom: 40px;
+      transition: all 0.3s ease;
+      z-index: 1;
     }
-
+  
+    .timeline-container.foreground {
+      z-index: 100;
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+  
     .timeline-container.main {
-      background-color: #f0f0f0; /* Neutral background for main timeline */
+      background-color: #f0f0f0;
     }
-
+  
     .timeline-line {
       position: absolute;
       top: 50%;
@@ -58,17 +66,17 @@
       z-index: 0;
       transform: translateY(-50%);
     }
-
+  
     .timeline-step {
       position: relative;
       text-align: center;
       cursor: pointer;
       z-index: 1;
     }
-
+  
     .timeline-step .circle {
-      width: 40px;
-      height: 40px;
+      width: 50px; /* Increased size */
+      height: 50px; /* Increased size */
       border-radius: 50%;
       margin: 0 auto;
       box-shadow: 0 2px 4px var(--hover-shadow);
@@ -77,59 +85,59 @@
       justify-content: center;
       color: white;
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 1rem; /* Increased font size */
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-
+  
     .timeline-popup-above,
     .timeline-popup-below {
       position: absolute;
       background: var(--popup-bg);
       border: 1px solid var(--popup-border);
       border-radius: 8px;
-      padding: 20px; /* Increased padding for larger popups */
-      font-size: 1rem; /* Adjust font size for better readability */
+      padding: 15px; /* Reduced padding */
+      font-size: 0.9rem; /* Reduced font size */
       color: var(--text-color);
       box-shadow: 0 4px 8px var(--hover-shadow);
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s ease, visibility 0.3s ease;
-      max-width: 350px; /* Increased width for more content */
+      max-width: 300px; /* Reduced width */
       text-align: center;
       z-index: 10;
     }
-
+  
     .timeline-popup-above {
-      bottom: 90px; /* Adjusted position */
+      bottom: 60px; /* Brought closer */
       left: 50%;
       transform: translateX(-50%);
     }
-
+  
     .timeline-popup-below {
-      top: 90px; /* Adjusted position */
+      top: 60px; /* Brought closer */
       left: 50%;
       transform: translateX(-50%);
     }
-
+  
     .timeline-step:hover .timeline-popup-above,
     .timeline-step:hover .timeline-popup-below {
       opacity: 1;
       visibility: visible;
     }
-
+  
     .timeline-step.show .timeline-popup-above,
     .timeline-step.show .timeline-popup-below {
       opacity: 1;
       visibility: visible;
     }
-
+  
     .timeline-container.expanded {
       max-height: 1000px;
       opacity: 1;
       transform: scaleY(1);
       transition: all 0.5s ease;
     }
-
+  
     .timeline-container.collapsed {
       max-height: 0;
       opacity: 0;
@@ -137,42 +145,42 @@
       overflow: hidden;
       transition: all 0.5s ease;
     }
-
+  
     /* Unique colors for expanded timelines */
     .timeline-container:nth-of-type(2) .circle {
       background: var(--primary-color-1);
     }
-
+  
     .timeline-container:nth-of-type(3) .circle {
       background: var(--primary-color-2);
     }
-
+  
     .timeline-container:nth-of-type(4) .circle {
       background: var(--primary-color-3);
     }
-
+  
     .timeline-container:nth-of-type(5) .circle {
       background: var(--primary-color-4);
     }
-
+  
     /* Responsive Design */
     @media (max-width: 768px) {
       .timeline-container {
-        padding: 40px; /* Adjust for smaller screens */
-        gap: 20px;
+        padding: 40px;
+        gap: 30px; /* Adjusted for smaller screens */
       }
-
+  
       .timeline-step .circle {
-        width: 30px;
-        height: 30px;
-        font-size: 0.75rem;
+        width: 40px; /* Adjusted size */
+        height: 40px; /* Adjusted size */
+        font-size: 0.85rem; /* Adjusted font size */
       }
-
+  
       .timeline-popup-above,
       .timeline-popup-below {
-        font-size: 0.85rem;
-        padding: 20px 50px;
-        max-width: 250px;
+        font-size: 0.8rem; /* Adjusted font size */
+        padding: 10px 12px; /* Adjusted padding */
+        max-width: 250px; /* Adjusted width */
       }
     }
   </style>
@@ -216,6 +224,7 @@
   </div>
 
   <!-- Expandable Timelines -->
+  <!-- Green Timeline -->
   <div class="timeline-container collapsed">
     <div class="timeline-line"></div>
     <div class="timeline-step" data-step="1">
@@ -224,156 +233,172 @@
       <div class="timeline-popup-below">Details for Green Step 1</div>
     </div>
     <div class="timeline-step" data-step="2">
-      <div class="circle">2</div>
-      <div class="timeline-popup-above">Green Step 2</div>
-      <div class="timeline-popup-below">Details for Green Step 2</div>
+        <div class="circle">2</div>
+        <div class="timeline-popup-above">Green Step 2</div>
+        <div class="timeline-popup-below">Details for Green Step 2</div>
+      </div>
+      <div class="timeline-step" data-step="3">
+        <div class="circle">3</div>
+        <div class="timeline-popup-above">Green Step 3</div>
+        <div class="timeline-popup-below">Details for Green Step 3</div>
+      </div>
+      <div class="timeline-step" data-step="4">
+        <div class="circle">4</div>
+        <div class="timeline-popup-above">Green Step 4</div>
+        <div class="timeline-popup-below">Details for Green Step 4</div>
+      </div>
+      <div class="timeline-step" data-step="5">
+        <div class="circle">5</div>
+        <div class="timeline-popup-above">Green Step 5</div>
+        <div class="timeline-popup-below">Details for Green Step 5</div>
+      </div>
+      <div class="timeline-step" data-step="6">
+        <div class="circle">6</div>
+        <div class="timeline-popup-above">Green Step 6</div>
+        <div class="timeline-popup-below">Details for Green Step 6</div>
+      </div>
     </div>
-    <div class="timeline-step" data-step="3">
-      <div class="circle">3</div>
-      <div class="timeline-popup-above">Green Step 3</div>
-      <div class="timeline-popup-below">Details for Green Step 3</div>
+  
+    <!-- Red Timeline -->
+    <div class="timeline-container collapsed">
+      <div class="timeline-line"></div>
+      <div class="timeline-step" data-step="1">
+        <div class="circle">1</div>
+        <div class="timeline-popup-above">Red Step 1</div>
+        <div class="timeline-popup-below">Details for Red Step 1</div>
+      </div>
+      <div class="timeline-step" data-step="2">
+        <div class="circle">2</div>
+        <div class="timeline-popup-above">Red Step 2</div>
+        <div class="timeline-popup-below">Details for Red Step 2</div>
+      </div>
+      <div class="timeline-step" data-step="3">
+        <div class="circle">3</div>
+        <div class="timeline-popup-above">Red Step 3</div>
+        <div class="timeline-popup-below">Details for Red Step 3</div>
+      </div>
+      <div class="timeline-step" data-step="4">
+        <div class="circle">4</div>
+        <div class="timeline-popup-above">Red Step 4</div>
+        <div class="timeline-popup-below">Details for Red Step 4</div>
+      </div>
+      <div class="timeline-step" data-step="5">
+        <div class="circle">5</div>
+        <div class="timeline-popup-above">Red Step 5</div>
+        <div class="timeline-popup-below">Details for Red Step 5</div>
+      </div>
+      <div class="timeline-step" data-step="6">
+        <div class="circle">6</div>
+        <div class="timeline-popup-above">Red Step 6</div>
+        <div class="timeline-popup-below">Details for Red Step 6</div>
+      </div>
     </div>
-    <div class="timeline-step" data-step="4">
-      <div class="circle">4</div>
-      <div class="timeline-popup-above">Green Step 4</div>
-      <div class="timeline-popup-below">Details for Green Step 4</div>
+  
+    <!-- Blue Timeline -->
+    <div class="timeline-container collapsed">
+      <div class="timeline-line"></div>
+      <div class="timeline-step" data-step="1">
+        <div class="circle">1</div>
+        <div class="timeline-popup-above">Blue Step 1</div>
+        <div class="timeline-popup-below">Details for Blue Step 1</div>
+      </div>
+      <div class="timeline-step" data-step="2">
+        <div class="circle">2</div>
+        <div class="timeline-popup-above">Blue Step 2</div>
+        <div class="timeline-popup-below">Details for Blue Step 2</div>
+      </div>
+      <div class="timeline-step" data-step="3">
+        <div class="circle">3</div>
+        <div class="timeline-popup-above">Blue Step 3</div>
+        <div class="timeline-popup-below">Details for Blue Step 3</div>
+      </div>
+      <div class="timeline-step" data-step="4">
+        <div class="circle">4</div>
+        <div class="timeline-popup-above">Blue Step 4</div>
+        <div class="timeline-popup-below">Details for Blue Step 4</div>
+      </div>
+      <div class="timeline-step" data-step="5">
+        <div class="circle">5</div>
+        <div class="timeline-popup-above">Blue Step 5</div>
+        <div class="timeline-popup-below">Details for Blue Step 5</div>
+      </div>
+      <div class="timeline-step" data-step="6">
+        <div class="circle">6</div>
+        <div class="timeline-popup-above">Blue Step 6</div>
+        <div class="timeline-popup-below">Details for Blue Step 6</div>
+      </div>
     </div>
-    <div class="timeline-step" data-step="5">
-      <div class="circle">5</div>
-      <div class="timeline-popup-above">Green Step 5</div>
-      <div class="timeline-popup-below">Details for Green Step 5</div>
+  
+    <!-- Orange Timeline -->
+    <div class="timeline-container collapsed">
+      <div class="timeline-line"></div>
+      <div class="timeline-step" data-step="1">
+        <div class="circle">1</div>
+        <div class="timeline-popup-above">Orange Step 1</div>
+        <div class="timeline-popup-below">Details for Orange Step 1</div>
+      </div>
+      <div class="timeline-step" data-step="2">
+        <div class="circle">2</div>
+        <div class="timeline-popup-above">Orange Step 2</div>
+        <div class="timeline-popup-below">Details for Orange Step 2</div>
+      </div>
+      <div class="timeline-step" data-step="3">
+        <div class="circle">3</div>
+        <div class="timeline-popup-above">Orange Step 3</div>
+        <div class="timeline-popup-below">Details for Orange Step 3</div>
+      </div>
+      <div class="timeline-step" data-step="4">
+        <div class="circle">4</div>
+        <div class="timeline-popup-above">Orange Step 4</div>
+        <div class="timeline-popup-below">Details for Orange Step 4</div>
+      </div>
+      <div class="timeline-step" data-step="5">
+        <div class="circle">5</div>
+        <div class="timeline-popup-above">Orange Step 5</div>
+        <div class="timeline-popup-below">Details for Orange Step 5</div>
+      </div>
+      <div class="timeline-step" data-step="6">
+        <div class="circle">6</div>
+        <div class="timeline-popup-above">Orange Step 6</div>
+        <div class="timeline-popup-below">Details for Orange Step 6</div>
+      </div>
     </div>
-    <div class="timeline-step" data-step="6">
-      <div class="circle">6</div>
-      <div class="timeline-popup-above">Green Step 6</div>
-      <div class="timeline-popup-below">Details for Green Step 6</div>
-    </div>
-  </div>
-
-  <!-- Additional expanded timelines go here, following the same structure -->
- <!-- Expandable Timelines -->
- <div class="timeline-container collapsed">
-    <div class="timeline-line"></div>
-    <div class="timeline-step" data-step="1">
-      <div class="circle">1</div>
-      <div class="timeline-popup-above">Green Step 1</div>
-      <div class="timeline-popup-below">Details for Green Step 1</div>
-    </div>
-    <div class="timeline-step" data-step="2">
-      <div class="circle">2</div>
-      <div class="timeline-popup-above">Green Step 2</div>
-      <div class="timeline-popup-below">Details for Green Step 2</div>
-    </div>
-    <div class="timeline-step" data-step="3">
-      <div class="circle">3</div>
-      <div class="timeline-popup-above">Green Step 3</div>
-      <div class="timeline-popup-below">Details for Green Step 3</div>
-    </div>
-    <div class="timeline-step" data-step="4">
-      <div class="circle">4</div>
-      <div class="timeline-popup-above">Green Step 4</div>
-      <div class="timeline-popup-below">Details for Green Step 4</div>
-    </div>
-    <div class="timeline-step" data-step="5">
-      <div class="circle">5</div>
-      <div class="timeline-popup-above">Green Step 5</div>
-      <div class="timeline-popup-below">Details for Green Step 5</div>
-    </div>
-    <div class="timeline-step" data-step="6">
-      <div class="circle">6</div>
-      <div class="timeline-popup-above">Green Step 6</div>
-      <div class="timeline-popup-below">Details for Green Step 6</div>
-    </div>
-  </div>
-   <!-- Expandable Timelines -->
-   <div class="timeline-container collapsed">
-    <div class="timeline-line"></div>
-    <div class="timeline-step" data-step="1">
-      <div class="circle">1</div>
-      <div class="timeline-popup-above">Green Step 1</div>
-      <div class="timeline-popup-below">Details for Green Step 1</div>
-    </div>
-    <div class="timeline-step" data-step="2">
-      <div class="circle">2</div>
-      <div class="timeline-popup-above">Green Step 2</div>
-      <div class="timeline-popup-below">Details for Green Step 2</div>
-    </div>
-    <div class="timeline-step" data-step="3">
-      <div class="circle">3</div>
-      <div class="timeline-popup-above">Green Step 3</div>
-      <div class="timeline-popup-below">Details for Green Step 3</div>
-    </div>
-    <div class="timeline-step" data-step="4">
-      <div class="circle">4</div>
-      <div class="timeline-popup-above">Green Step 4</div>
-      <div class="timeline-popup-below">Details for Green Step 4</div>
-    </div>
-    <div class="timeline-step" data-step="5">
-      <div class="circle">5</div>
-      <div class="timeline-popup-above">Green Step 5</div>
-      <div class="timeline-popup-below">Details for Green Step 5</div>
-    </div>
-    <div class="timeline-step" data-step="6">
-      <div class="circle">6</div>
-      <div class="timeline-popup-above">Green Step 6</div>
-      <div class="timeline-popup-below">Details for Green Step 6</div>
-    </div>
-  </div>
-   <!-- Expandable Timelines -->
-   <div class="timeline-container collapsed">
-    <div class="timeline-line"></div>
-    <div class="timeline-step" data-step="1">
-      <div class="circle">1</div>
-      <div class="timeline-popup-above">Green Step 1</div>
-      <div class="timeline-popup-below">Details for Green Step 1</div>
-    </div>
-    <div class="timeline-step" data-step="2">
-      <div class="circle">2</div>
-      <div class="timeline-popup-above">Green Step 2</div>
-      <div class="timeline-popup-below">Details for Green Step 2</div>
-    </div>
-    <div class="timeline-step" data-step="3">
-      <div class="circle">3</div>
-      <div class="timeline-popup-above">Green Step 3</div>
-      <div class="timeline-popup-below">Details for Green Step 3</div>
-    </div>
-    <div class="timeline-step" data-step="4">
-      <div class="circle">4</div>
-      <div class="timeline-popup-above">Green Step 4</div>
-      <div class="timeline-popup-below">Details for Green Step 4</div>
-    </div>
-    <div class="timeline-step" data-step="5">
-      <div class="circle">5</div>
-      <div class="timeline-popup-above">Green Step 5</div>
-      <div class="timeline-popup-below">Details for Green Step 5</div>
-    </div>
-    <div class="timeline-step" data-step="6">
-      <div class="circle">6</div>
-      <div class="timeline-popup-above">Green Step 6</div>
-      <div class="timeline-popup-below">Details for Green Step 6</div>
-    </div>
-  </div>
-
-  <script>
-    document.querySelectorAll('.timeline-container.main .timeline-step').forEach(step => {
-      step.addEventListener('click', () => {
-        const expandedTimelines = document.querySelectorAll('.timeline-container:not(.main)');
-        expandedTimelines.forEach(timeline => {
-          timeline.classList.toggle('collapsed');
-          timeline.classList.toggle('expanded');
+  
+    <script>
+      // Toggle expanded timelines from main timeline
+      document.querySelectorAll('.timeline-container.main .timeline-step').forEach(step => {
+        step.addEventListener('click', () => {
+          const expandedTimelines = document.querySelectorAll('.timeline-container:not(.main)');
+          expandedTimelines.forEach(timeline => {
+            timeline.classList.toggle('collapsed');
+            timeline.classList.toggle('expanded');
+          });
         });
       });
-    });
-
-    document.querySelectorAll('.timeline-container:not(.main) .timeline-step').forEach(step => {
-      step.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const stepNumber = step.getAttribute('data-step');
-        document.querySelectorAll(`.timeline-container.expanded .timeline-step[data-step="${stepNumber}"]`).forEach(matchingStep => {
-          matchingStep.classList.toggle('show');
+  
+      // Show popups for corresponding nodes in expanded timelines
+      document.querySelectorAll('.timeline-container:not(.main) .timeline-step').forEach(step => {
+        step.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const stepNumber = step.getAttribute('data-step');
+          document.querySelectorAll(`.timeline-container.expanded .timeline-step[data-step="${stepNumber}"]`).forEach(matchingStep => {
+            matchingStep.classList.toggle('show');
+          });
+          const container = step.closest('.timeline-container');
+          document.querySelectorAll('.timeline-container').forEach(c => c.classList.remove('foreground'));
+          container.classList.add('foreground');
         });
       });
-    });
-  </script>
-</body>
-</html>
+  
+      // Remove foreground when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.timeline-container')) {
+          document.querySelectorAll('.timeline-container').forEach(container => {
+            container.classList.remove('foreground');
+          });
+        }
+      });
+    </script>
+  </body>
+  </html>
+  
