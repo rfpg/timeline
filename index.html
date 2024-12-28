@@ -490,18 +490,18 @@
       </div>
     </div>
   
-  <script>
+    <script>
       // Toggle expanded timelines from main timeline
       document.querySelectorAll('.timeline-container.main .timeline-step').forEach(step => {
         step.addEventListener('click', () => {
           const expandedTimelines = document.querySelectorAll('.timeline-container:not(.main)');
           expandedTimelines.forEach(timeline => {
-            timeline.classList.toggle('collapsed');
-            timeline.classList.toggle('expanded');
+            timeline.classList.add('expanded');
+            timeline.classList.remove('collapsed');
           });
         });
       });
-  
+    
       // Show popups for corresponding nodes in expanded timelines
       document.querySelectorAll('.timeline-container:not(.main) .timeline-step').forEach(step => {
         step.addEventListener('click', (e) => {
@@ -515,46 +515,37 @@
           container.classList.add('foreground');
         });
       });
-  
+    
+      // Show overlay when clicking on a timeline step
+      document.querySelectorAll('.timeline-step').forEach(step => {
+        step.addEventListener('click', function() {
+          const overlay = document.getElementById('overlay');
+          const overlayText = document.getElementById('overlay-text');
+          const popupAbove = this.querySelector('.timeline-popup-above').innerHTML;
+          const popupBelow = this.querySelector('.timeline-popup-below').innerHTML;
+          overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${popupBelow}</p>`;
+          overlay.style.display = 'flex';
+        });
+      });
+    
+      // Close overlay and collapse timelines
+      function closeOverlay() {
+        document.getElementById('overlay').style.display = 'none';
+        const expandedTimelines = document.querySelectorAll('.timeline-container.expanded');
+        expandedTimelines.forEach(timeline => {
+          timeline.classList.add('collapsed');
+          timeline.classList.remove('expanded');
+        });
+      }
+    
       // Remove foreground when clicking outside
       document.addEventListener('click', (e) => {
-        if (!e.target.closest('.timeline-container')) {
+        if (!e.target.closest('.timeline-container') && !e.target.closest('#overlay')) {
           document.querySelectorAll('.timeline-container').forEach(container => {
             container.classList.remove('foreground');
           });
         }
       });
-
-      document.querySelectorAll('.timeline-step').forEach(step => {
-      step.addEventListener('click', function() {
-        const overlay = document.getElementById('overlay');
-        const overlayText = document.getElementById('overlay-text');
-        const popupAbove = this.querySelector('.timeline-popup-above').innerHTML;
-        const popupBelow = this.querySelector('.timeline-popup-below').innerHTML;
-        overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${popupBelow}</p>`;
-        overlay.style.display = 'flex';
-      });
-    });
-
-    document.querySelectorAll('.timeline-step').forEach(step => {
-      step.addEventListener('click', function() {
-        const overlay = document.getElementById('overlay');
-        const overlayText = document.getElementById('overlay-text');
-        const popupAbove = this.querySelector('.timeline-popup-above').innerHTML;
-        const popupBelow = this.querySelector('.timeline-popup-below').innerHTML;
-        overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${popupBelow}</p>`;
-        overlay.style.display = 'flex';
-      });
-    });
-    
-    function truncateText(text, maxLength) {
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-    }
-
-
-    function closeOverlay() {
-      document.getElementById('overlay').style.display = 'none';
-    }
     </script>
   </body>
   </html>
