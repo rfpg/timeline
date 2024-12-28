@@ -32,6 +32,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      transform: scale(0.9); /* Scale everything to 80% */
+      transform-origin: top left; /* Ensure scaling starts from the top left corner */
     }
   
     .timeline-container {
@@ -275,11 +277,27 @@
   transform: translateY(-50%);
 }
 
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.timeline-container.main .timeline-step[data-step="1"] .circle {
+  animation: pulse 1.5s infinite;
+}
+
 .timeline-container.expanded .timeline-line {
   left: 200px; /* Adjust to ensure the line doesn't go through the image */
 }
 
-.timeline-container.main .timeline-step[data-step="1"],
+/* .timeline-container.main .timeline-step[data-step="1"],
 .timeline-container.main .timeline-step[data-step="2"],
 .timeline-container.main .timeline-step[data-step="3"] {
   background-color: rgba(21, 145, 222, 0.118); /* Blue shading */
@@ -295,7 +313,7 @@
   background-color: rgba(71, 146, 226, 0.824); /* Lighter blue shading */
   border-radius: 8px;
   padding: 10px;
-}
+} */
 
     
   
@@ -617,6 +635,12 @@
           });
         }
       });
-    </script>
+      
+      // Stop pulse animation on click
+      document.querySelector('.timeline-container.main .timeline-step[data-step="1"] .circle').addEventListener('click', function() {
+        this.style.animation = 'none';
+      });
+      
+  </script>
   </body>
   </html>
