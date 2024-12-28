@@ -81,7 +81,17 @@
       text-align: center;
       cursor: pointer;
       z-index: 1;
+
+      opacity: 1;
+      transition: opacity 0.3s ease; /* Smooth transition for opacity */
     }
+
+    .timeline-step.opacity-5 { opacity: 1; }
+    .timeline-step.opacity-4 { opacity: 0.75; }
+    .timeline-step.opacity-3 { opacity: 0.75; }
+    .timeline-step.opacity-2 { opacity: 0.75; }
+    .timeline-step.opacity-1 { opacity: 0.75; }
+
   
     .timeline-step .circle {
       width: 50px; /* Increased size */
@@ -116,7 +126,7 @@
       z-index: 1000; /* Set a high z-index value */
       white-space: normal; /* Allow text to wrap */
       height: auto;
-      width: auto; /* Allow width to adjust based on content */
+      width: 300px; /* Allow width to adjust based on content */
       max-width: none; /* Remove max-width to prevent cutting off text */
       color: black;
     }
@@ -318,6 +328,7 @@
   </style>
 </head>
 <body>
+  <h1>Project Pipeline (Pre-Award to Project Close)</h1>
 
   
 
@@ -589,6 +600,7 @@
           expandedTimelines.forEach(timeline => {
             timeline.classList.add('expanded');
             timeline.classList.remove('collapsed');
+            applyIncrementalOpacity(timeline); 
           });
         });
       });
@@ -677,6 +689,20 @@
             timeline.classList.add('expanded');
             timeline.classList.remove('collapsed');
             assignTitles(timeline); // Reassign titles for expanded timelines
+
+            // Assign instructional text relative to persona
+            if (timeline.querySelector('.image-title').textContent === 'Staff') {
+              updatePopupBelowContent(timeline, 'green');
+            } 
+            else if (timeline.querySelector('.image-title').textContent === 'People Leader (GL, DM)') {
+              updatePopupBelowContent(timeline, 'red');
+            } 
+            else if (timeline.querySelector('.image-title').textContent === 'Project Leader (PL)') {
+              updatePopupBelowContent(timeline, 'blue');
+            } 
+            else if (timeline.querySelector('.image-title').textContent === 'Business Leader (FA)') {
+              updatePopupBelowContent(timeline, 'orange');
+            }
           });
         });
       });
@@ -689,6 +715,76 @@
         }
       });
 
+      // // Function to apply incremental opacity to the last four nodes
+      // function applyIncrementalOpacity(timeline) {
+      //   const steps = Array.from(timeline.querySelectorAll('.timeline-step'));
+      //   const lastFiveSteps = steps.slice(-5); // Get the last five steps
+
+      //   // Clear existing opacity classes
+      //   steps.forEach(step => {
+      //     step.classList.remove('opacity-1', 'opacity-2', 'opacity-3', 'opacity-4', 'opacity-5');
+      //   });
+
+      //   // Apply incremental opacity classes
+      //   lastFiveSteps.forEach((step, index) => {
+      //     step.classList.add(`opacity-${index + 1}`);
+      //   });
+      // }
+
+      const popupBelowData = {
+        green: [
+          "Staff should update skills and their tech stature to be able to take on new projects. Staff should also be proactive in identifying project opportunities.",
+          "Staff require support from their People Leader (GL, DM) to proactively identify project opportunites. Staff need to be proactive and establish clear channels of communication with their GLs.",
+          "Staff need to be proactive and establish clear channels of communication with Project Leaders so the project scope and commitment is clear.",
+          "When Held to a project, Staff must be clear on roles and responsibilities.",
+          "When Held to a project, Staff must be clear on how much of their time is allocated to a project.",
+          "Staff should request feedback from the Project or Task Leader on their performance, particularly if none is given.",
+          "Staff should take the iniative and request advance notice from a Project Leader on a project close-out timeline so they have adequate time to plan a transition to a new project, with the guidance of their People Leader.",
+          "Staff should ensure that they deliver on their project commitments in advance of project close-out."
+        ],
+        blue: [
+          "The Project Leader requests project details from the Opportunity Manager.",
+          "The Project Leader partners with Business Leaders on project budget, resource costing and ODCs.",
+          "The Project Leader defines roles and skill sets and assign staff to relevant opportunities.",
+          "The Project Leader tracks any and all financial updates and support any necessary staffing adjustments.",
+          "The Project Leader communicates any pertinent changes in project scope, schedule or other project issues.",
+          "The Project Leader requests reports on staffing performance from other leaders within the team, including staff development plans and resource management.",
+          "The Project Leader requests support from Business Leaders to ensure effective project close-out and ensure sponsor requirements have been met.",
+          "The Project Leader communicates to People Leaders and Staff on project close-out to ensure adequate time for staff transition plans to new projects."
+        ],
+        red: [
+          "People Leaders request project labor details from the Project Leader.",
+          "People Leaders should assist staff in finding project opportunities that foster their growth and development.",
+          "People Leaders should provide Opportunity Managers and Project Leaders with insights into staff skills and capabilities.",
+          "People Leaders should request updates from Project Leaders on project status and any changes in project scope.",
+          "People Leaders should request feedback on staff performance from Project Leaders.",
+          "People Leaders manage coverage and availability across all projects.",
+          "People Leaders should request support from Project Leaders to ensure effective project close-out and ensure sponsor requirements have been met.",
+          "People Leaders should assist staff with finding new work, advocating for their development and ensuring good-faith collaboration with Project Leaders."
+        ],
+        orange: [
+          "Business Leaders to collaborate with Project Leaders staff plan for pricing purposes",
+          "Business Leaders request ODC from Project Leaders for pricing purposes and support on pricing and estimates.",
+          "Business Leaders should add project numbers and expenses codes.",
+          "Business Leaders should request updates from Project Leaders on project status and any changes in project scope.",
+          "Business Leaders provide guidance on project execution (burn rates, ramp-up/down, etc.).",
+          "Business Leaders should request notification of any changes in staffing allocations or project changes.",
+          "Business Leaders should request details on any trailing costs from Project Leaders.",
+          "Business Leaders should assist Project Leaders achieve a soft landing for staff and ensure that all project requirements have been met."
+        ]
+      };
+
+      function updatePopupBelowContent(timeline, type) {
+        const steps = Array.from(timeline.querySelectorAll('.timeline-step'));
+        const data = popupBelowData[type];
+
+        steps.forEach((step, index) => {
+          const popupBelow = step.querySelector('.timeline-popup-below');
+          if (popupBelow && data[index]) {
+            popupBelow.textContent = data[index];
+          }
+        });
+      }
   </script>
   </body>
   </html>
