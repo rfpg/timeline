@@ -20,7 +20,7 @@
       --secondary-color: #f9f9f9;
       --popup-bg: white;
       --popup-border: #ddd;
-      --text-color: #333;
+      --text-color: #978e8e;
       --hover-shadow: rgba(0, 0, 0, 0.2);
     }
   
@@ -42,7 +42,7 @@
       position: relative;
       padding: 80px;
       width: 90%;
-      max-width: 800px;
+      max-width: 1000px;
       overflow-x: auto;
       white-space: nowrap;
       background-color: #fff;
@@ -103,7 +103,7 @@
       background: var(--popup-bg);
       border: 1px solid var(--popup-border);
       border-radius: 8px;
-      padding: 5px;
+      padding: 10px;
       font-size: 0.5rem;
       color: var(--text-color);
       box-shadow: 0 4px 8px var(--hover-shadow);
@@ -111,27 +111,26 @@
       visibility: hidden;
       transition: opacity 0.3s ease, visibility 0.3s ease;
       text-align: left;
-      z-index: 10;
+      z-index: 1000; /* Set a high z-index value */
       white-space: normal; /* Allow text to wrap */
       height: auto;
-      width: auto; /* Adjust width to fit text */
-      max-width: 400px; /* Optional: Set a maximum width */
-      color:black;
-      font-size: 0.5rem;
+      width: auto; /* Allow width to adjust based on content */
+      max-width: none; /* Remove max-width to prevent cutting off text */
+      color: black;
     }
-  
+
     .timeline-popup-above {
-      bottom: 60px; /* Brought closer */
+      top: -100%; /* Position above the step */
       left: 50%;
       transform: translateX(-50%);
     }
-  
+
     .timeline-popup-below {
-      top: 60px; /* Brought closer */
+      top: 100%; /* Position below the step */
       left: 50%;
       transform: translateX(-50%);
     }
-  
+
     .timeline-step:hover .timeline-popup-above,
     .timeline-step:hover .timeline-popup-below {
       opacity: 1;
@@ -191,10 +190,26 @@
   
       .timeline-popup-above,
       .timeline-popup-below {
-        font-size: 0.8rem; /* Adjusted font size */
-        padding: 10px 12px; /* Adjusted padding */
-        max-width: 250px; /* Adjusted width */
-      }  
+        position: absolute;
+        background: var(--popup-bg);
+        border: 1px solid var(--popup-border);
+        border-radius: 8px;
+        padding: 5px;
+        font-size: 0.5rem;
+        color: var(--text-color);
+        box-shadow: 0 4px 8px var(--hover-shadow);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        text-align: left;
+        z-index: 1000; /* Set a high z-index value */
+        white-space: normal; /* Allow text to wrap */
+        height: auto;
+        width: auto; /* Adjust width to fit text */
+        max-width: 700px; /* Optional: Set a maximum width */
+        color: black;
+        font-size: 0.5rem;
+      } 
     }
     .triangle {
       width: 0;
@@ -204,7 +219,7 @@
       border-top: 20px solid var(--primary-color-3a); /* Changed to border-bottom for upside-down triangle */
       position: absolute;
       top: -30px;
-      left: 50%;
+      left: 0%;
       transform: translateX(-200%);
       display: flex;
       align-items: center;
@@ -221,6 +236,7 @@
       top: -50px; /* Adjusted position */
       left: 50%;
       transform: translateX(-50%);
+      z-index: 1;
   }
     
   
@@ -284,6 +300,14 @@
       <div class="timeline-popup-below">Project Leaders close out project, Staff are unheld and respective People Leaders are notified of the project completion.</div>
     </div>
  
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="overlay">
+    <div class="overlay-content">
+      <span class="close-btn" onclick="closeOverlay()">&times;</span>
+      <div id="overlay-text"></div>
+    </div>
   </div>
 
   <!-- Expandable Timelines -->
@@ -502,6 +526,21 @@
           });
         }
       });
+
+      document.querySelectorAll('.timeline-step').forEach(step => {
+      step.addEventListener('click', function() {
+        const overlay = document.getElementById('overlay');
+        const overlayText = document.getElementById('overlay-text');
+        const popupAbove = this.querySelector('.timeline-popup-above').innerHTML;
+        const popupBelow = this.querySelector('.timeline-popup-below').innerHTML;
+        overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${popupBelow}</p>`;
+        overlay.style.display = 'flex';
+      });
+    });
+
+    function closeOverlay() {
+      document.getElementById('overlay').style.display = 'none';
+    }
     </script>
   </body>
   </html>
