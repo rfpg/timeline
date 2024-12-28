@@ -159,19 +159,19 @@
     }
   
     /* Unique colors for expanded timelines */
-    .timeline-container:nth-of-type(2) .circle {
+    .timeline-container:nth-of-type(3) .circle {
       background: var(--primary-color-1);
     }
   
-    .timeline-container:nth-of-type(3) .circle {
+    .timeline-container:nth-of-type(4) .circle {
       background: var(--primary-color-2);
     }
   
-    .timeline-container:nth-of-type(4) .circle {
+    .timeline-container:nth-of-type(5) .circle {
       background: var(--primary-color-3);
     }
   
-    .timeline-container:nth-of-type(5) .circle {
+    .timeline-container:nth-of-type(6) .circle {
       background: var(--primary-color-4);
     }
   
@@ -220,7 +220,7 @@
       position: absolute;
       top: -30px;
       left: 0%;
-      transform: translateX(-200%);
+      transform: translateX(0);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -292,18 +292,13 @@
       <div class="circle"style="background-color: var(--primary-color-1d);">2.5</div>
       <div class="timeline-popup-above">2.5 Close Project</div>
       <div class="timeline-popup-below">Project Leaders close out project, Staff are unheld and respective People Leaders are notified of the project completion.</div>
-    </div>
-    <div class="timeline-step" data-step="">
       <div class="triangle" data-text="Project Close"></div>
-      <div class=""></div>
-      <div class="timeline-popup-above">2.5 Close Project</div>
-      <div class="timeline-popup-below">Project Leaders close out project, Staff are unheld and respective People Leaders are notified of the project completion.</div>
-    </div>
  
+    </div>   
   </div>
 
-  <!-- Overlay -->
-  <div id="overlay" class="overlay">
+   <!-- Overlay -->
+   <div id="overlay" class="overlay">
     <div class="overlay-content">
       <span class="close-btn" onclick="closeOverlay()">&times;</span>
       <div id="overlay-text"></div>
@@ -314,7 +309,7 @@
   <!-- Green Timeline -->
   <div class="timeline-container collapsed">
     <div class="timeline-line"></div>
-    
+    <img src="staff.jpg" alt="staff" style="width: 100px; height: 100px; border-radius: 50%; margin: 0 auto;">
     <div class="timeline-step" data-step="1">
       <div class="circle">1</div>
       <div class="timeline-popup-above">Green Step 1</div>
@@ -360,6 +355,7 @@
     <!-- Red Timeline -->
     <div class="timeline-container collapsed">
       <div class="timeline-line"></div>
+      <img src="gl.jpg" alt="staff" style="width: 100px; height: 100px; border-radius: 50%; margin: 0 auto;">
       <div class="timeline-step" data-step="1">
         <div class="circle">1</div>
         <div class="timeline-popup-above">Red Step 1</div>
@@ -405,6 +401,7 @@
     <!-- Blue Timeline -->
     <div class="timeline-container collapsed">
       <div class="timeline-line"></div>
+      <img src="pl.jpg" alt="staff" style="width: 100px; height: 100px; border-radius: 50%; margin: 0 auto;">
       <div class="timeline-step" data-step="1">
         <div class="circle">1</div>
         <div class="timeline-popup-above">Blue Step 1</div>
@@ -450,6 +447,7 @@
     <!-- Orange Timeline -->
     <div class="timeline-container collapsed">
       <div class="timeline-line"></div>
+      <img src="bl.jpg" alt="staff" style="width: 100px; height: 100px; border-radius: 50%; margin: 0 auto;">
       <div class="timeline-step" data-step="1">
         <div class="circle">1</div>
         <div class="timeline-popup-above">Orange Step 1</div>
@@ -492,7 +490,7 @@
       </div>
     </div>
   
-    <script>
+  <script>
       // Toggle expanded timelines from main timeline
       document.querySelectorAll('.timeline-container.main .timeline-step').forEach(step => {
         step.addEventListener('click', () => {
@@ -537,6 +535,22 @@
         overlay.style.display = 'flex';
       });
     });
+
+    document.querySelectorAll('.timeline-step').forEach(step => {
+      step.addEventListener('click', function() {
+        const overlay = document.getElementById('overlay');
+        const overlayText = document.getElementById('overlay-text');
+        const popupAbove = this.querySelector('.timeline-popup-above').innerHTML;
+        const popupBelow = this.querySelector('.timeline-popup-below').innerHTML;
+        overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${popupBelow}</p>`;
+        overlay.style.display = 'flex';
+      });
+    });
+    
+    function truncateText(text, maxLength) {
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    }
+
 
     function closeOverlay() {
       document.getElementById('overlay').style.display = 'none';
