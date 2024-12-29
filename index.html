@@ -307,6 +307,8 @@
   left: 200px; /* Adjust to ensure the line doesn't go through the image */
 }
 
+/* color shading behind main timeline nodes */
+
 /* .timeline-container.main .timeline-step[data-step="1"],
 .timeline-container.main .timeline-step[data-step="2"],
 .timeline-container.main .timeline-step[data-step="3"] {
@@ -354,7 +356,7 @@
       <div class="triangle" data-text="High-Confidence"></div>
       <div class="circle" style="background-color: var(--primary-color-4);">1.3</div>
       <div class="timeline-popup-above">${titles[2]}</div>
-      <div class="timeline-popup-below">Opportunity Manager works with Finacial Analyst and Business Partners to acquire Costpoint number.</div>
+      <div class="timeline-popup-below">Opportunity Manager works with Financial Analyst and Business Partners to acquire Costpoint number.</div>
     </div>
     <div class="timeline-step" data-step="4">
       <div class="triangle" data-text="Awarded" ></div>
@@ -590,201 +592,190 @@
     <div class="timeline-popup-below">Details for Orange Step 8</div>
   </div>
 </div>
-  
-    <script>
+<script>
+  // Toggle expanded timelines from main timeline
+  document.querySelectorAll('.timeline-container.main .timeline-step').forEach(step => {
+    step.addEventListener('click', () => {
+      const expandedTimelines = document.querySelectorAll('.timeline-container:not(.main)');
+      expandedTimelines.forEach(timeline => {
+        timeline.classList.add('expanded');
+        timeline.classList.remove('collapsed');
+        assignTitles(timeline);
+        updatePopupBelowContent(timeline); // Update popup content based on persona
+        truncatePopupBelow(timeline); // Truncate popup-below text for expanded timelines
+      });
+    });
+  });
 
-      // Toggle expanded timelines from main timeline
-      document.querySelectorAll('.timeline-container.main .timeline-step').forEach(step => {
-        step.addEventListener('click', () => {
-          const expandedTimelines = document.querySelectorAll('.timeline-container:not(.main)');
-          expandedTimelines.forEach(timeline => {
-            timeline.classList.add('expanded');
-            timeline.classList.remove('collapsed');
-            applyIncrementalOpacity(timeline); 
-          });
-        });
+  // Show popups for corresponding nodes in expanded timelines
+  document.querySelectorAll('.timeline-container:not(.main) .timeline-step').forEach(step => {
+    step.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const stepNumber = step.getAttribute('data-step');
+      document.querySelectorAll(`.timeline-container.expanded .timeline-step[data-step="${stepNumber}"]`).forEach(matchingStep => {
+        matchingStep.classList.toggle('show');
       });
-    
-      // Show popups for corresponding nodes in expanded timelines
-      document.querySelectorAll('.timeline-container:not(.main) .timeline-step').forEach(step => {
-        step.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const stepNumber = step.getAttribute('data-step');
-          document.querySelectorAll(`.timeline-container.expanded .timeline-step[data-step="${stepNumber}"]`).forEach(matchingStep => {
-            matchingStep.classList.toggle('show');
-          });
-          const container = step.closest('.timeline-container');
-          document.querySelectorAll('.timeline-container').forEach(c => c.classList.remove('foreground'));
-          container.classList.add('foreground');
-        });
+      const container = step.closest('.timeline-container');
+      document.querySelectorAll('.timeline-container').forEach(c => c.classList.remove('foreground'));
+      container.classList.add('foreground');
+    });
+  });
+
+  // Show overlay when clicking on a timeline step
+  document.querySelectorAll('.timeline-step').forEach(step => {
+    step.addEventListener('click', function() {
+      const overlay = document.getElementById('overlay');
+      const overlayText = document.getElementById('overlay-text');
+      const popupAbove = this.querySelector('.timeline-popup-above').innerHTML;
+      const fullPopupBelow = this.querySelector('.timeline-popup-below').dataset.fullText || this.querySelector('.timeline-popup-below').textContent;
+      overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${fullPopupBelow}</p>`;
+      overlay.style.display = 'flex';
+    });
+  });
+
+  // Close overlay and collapse timelines
+  function closeOverlay() {
+    document.getElementById('overlay').style.display = 'none';
+    const expandedTimelines = document.querySelectorAll('.timeline-container.expanded');
+    expandedTimelines.forEach(timeline => {
+      timeline.classList.add('collapsed');
+      timeline.classList.remove('expanded');
+    });
+  }
+
+  // Remove foreground when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.timeline-container') && !e.target.closest('#overlay')) {
+      document.querySelectorAll('.timeline-container').forEach(container => {
+        container.classList.remove('foreground');
       });
-    
-      // Show overlay when clicking on a timeline step
-      document.querySelectorAll('.timeline-step').forEach(step => {
-        step.addEventListener('click', function() {
-          const overlay = document.getElementById('overlay');
-          const overlayText = document.getElementById('overlay-text');
-          const popupAbove = this.querySelector('.timeline-popup-above').innerHTML;
-          const popupBelow = this.querySelector('.timeline-popup-below').innerHTML;
-          overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${popupBelow}</p>`;
-          overlay.style.display = 'flex';
-        });
-      });
-    
-      // Close overlay and collapse timelines
-      function closeOverlay() {
-        document.getElementById('overlay').style.display = 'none';
-        const expandedTimelines = document.querySelectorAll('.timeline-container.expanded');
-        expandedTimelines.forEach(timeline => {
-          timeline.classList.add('collapsed');
-          timeline.classList.remove('expanded');
-        });
-      }
-    
-      // Remove foreground when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('.timeline-container') && !e.target.closest('#overlay')) {
-          document.querySelectorAll('.timeline-container').forEach(container => {
-            container.classList.remove('foreground');
-          });
+    }
+  });
+
+  // Stop pulse animation on click
+  document.querySelector('.timeline-container.main .timeline-step[data-step="1"] .circle').addEventListener('click', function() {
+    this.style.animation = 'none';
+  });
+
+  // Function to truncate text in popup-below
+  function truncatePopupBelow(timeline) {
+    const steps = timeline.querySelectorAll('.timeline-popup-below');
+    steps.forEach(popup => {
+      const fullText = popup.textContent.trim();
+      const truncatedText = fullText.split('.')[0] + '.';
+      popup.dataset.fullText = fullText; // Store full text for overlay
+      popup.textContent = truncatedText; // Display truncated text
+    });
+  }
+
+  // Titles for top pop-up
+  const titles = [
+    "1.1 Identify Opportunity",
+    "1.2 Mature Opportunity to High Confidence",
+    "1.3 Manage High Confidence Opportunity",
+    "2.1 Launch Project",
+    "2.2 Manage Project",
+    "2.3 Report Progress",
+    "2.4 Deliver Results",
+    "2.5 Close Project"
+  ];
+
+  // Function to assign titles to popups
+  function assignTitles(container) {
+    container.querySelectorAll('.timeline-step').forEach((step, index) => {
+      const popupAbove = step.querySelector('.timeline-popup-above');
+      if (popupAbove) {
+        if (index < titles.length) {
+          popupAbove.textContent = titles[index];
+        } else {
+          popupAbove.textContent = "Title not available";
         }
-      });
-      
-      // Stop pulse animation on click
-      document.querySelector('.timeline-container.main .timeline-step[data-step="1"] .circle').addEventListener('click', function() {
-        this.style.animation = 'none';
-      });     
-      
-     // Titles for top pop-up
-      const titles = [
-        "1.1 Identify Opportunity",
-        "1.2 Mature Opportunity to High Confidence",
-        "1.3 Manage High Confidence Opportunity",
-        "2.1 Launch Project",
-        "2.2 Manage Project",
-        "2.3 Report Progress",
-        "2.4 Deliver Results",
-        "2.5 Close Project"
-      ];
-
-      // Function to assign titles to popups
-      function assignTitles(container) {
-        container.querySelectorAll('.timeline-step').forEach((step, index) => {
-          const popupAbove = step.querySelector('.timeline-popup-above');
-          if (popupAbove) {
-            if (index < titles.length) {
-              popupAbove.textContent = titles[index];
-            } else {
-              popupAbove.textContent = "Title not available";
-            }
-          }
-        });
       }
+    });
+  }
 
-      // Toggle expanded timelines from main timeline
-      document.querySelectorAll('.timeline-container.main .timeline-step').forEach(step => {
-        step.addEventListener('click', () => {
-          const expandedTimelines = document.querySelectorAll('.timeline-container:not(.main)');
-          expandedTimelines.forEach(timeline => {
-            timeline.classList.add('expanded');
-            timeline.classList.remove('collapsed');
-            assignTitles(timeline); // Reassign titles for expanded timelines
+  // Function to update popup-below content based on persona
+  function updatePopupBelowContent(timeline) {
+    const persona = timeline.querySelector('.image-title').textContent.trim().toLowerCase();
+    let data;
+    switch (persona) {
+      case 'staff':
+        data = popupBelowData.green;
+        break;
+      case 'people leader (gl, dm)':
+        data = popupBelowData.red;
+        break;
+      case 'project leader (pl)':
+        data = popupBelowData.blue;
+        break;
+      case 'business leader (fa)':
+        data = popupBelowData.orange;
+        break;
+      default:
+        return;
+    }
 
-            // Assign instructional text relative to persona
-            if (timeline.querySelector('.image-title').textContent === 'Staff') {
-              updatePopupBelowContent(timeline, 'green');
-            } 
-            else if (timeline.querySelector('.image-title').textContent === 'People Leader (GL, DM)') {
-              updatePopupBelowContent(timeline, 'red');
-            } 
-            else if (timeline.querySelector('.image-title').textContent === 'Project Leader (PL)') {
-              updatePopupBelowContent(timeline, 'blue');
-            } 
-            else if (timeline.querySelector('.image-title').textContent === 'Business Leader (FA)') {
-              updatePopupBelowContent(timeline, 'orange');
-            }
-          });
-        });
-      });
-
-      // Assign titles on initial load for main timeline
-      document.addEventListener('DOMContentLoaded', () => {
-        const mainTimeline = document.querySelector('.timeline-container.main');
-        if (mainTimeline) {
-          assignTitles(mainTimeline);
-        }
-      });
-
-      // // Function to apply incremental opacity to the last four nodes
-      // function applyIncrementalOpacity(timeline) {
-      //   const steps = Array.from(timeline.querySelectorAll('.timeline-step'));
-      //   const lastFiveSteps = steps.slice(-5); // Get the last five steps
-
-      //   // Clear existing opacity classes
-      //   steps.forEach(step => {
-      //     step.classList.remove('opacity-1', 'opacity-2', 'opacity-3', 'opacity-4', 'opacity-5');
-      //   });
-
-      //   // Apply incremental opacity classes
-      //   lastFiveSteps.forEach((step, index) => {
-      //     step.classList.add(`opacity-${index + 1}`);
-      //   });
-      // }
-
-      const popupBelowData = {
-        green: [
-          "Staff should update skills and their tech stature to be able to take on new projects. Staff should also be proactive in identifying project opportunities.",
-          "Staff require support from their People Leader (GL, DM) to proactively identify project opportunites. Staff need to be proactive and establish clear channels of communication with their GLs.",
-          "Staff need to be proactive and establish clear channels of communication with Project Leaders so the project scope and commitment is clear.",
-          "When Held to a project, Staff must be clear on roles and responsibilities.",
-          "When Held to a project, Staff must be clear on how much of their time is allocated to a project.",
-          "Staff should request feedback from the Project or Task Leader on their performance, particularly if none is given.",
-          "Staff should take the iniative and request advance notice from a Project Leader on a project close-out timeline so they have adequate time to plan a transition to a new project, with the guidance of their People Leader.",
-          "Staff should ensure that they deliver on their project commitments in advance of project close-out."
-        ],
-        blue: [
-          "The Project Leader requests project details from the Opportunity Manager.",
-          "The Project Leader partners with Business Leaders on project budget, resource costing and ODCs.",
-          "The Project Leader defines roles and skill sets and assign staff to relevant opportunities.",
-          "The Project Leader tracks any and all financial updates and support any necessary staffing adjustments.",
-          "The Project Leader communicates any pertinent changes in project scope, schedule or other project issues.",
-          "The Project Leader requests reports on staffing performance from other leaders within the team, including staff development plans and resource management.",
-          "The Project Leader requests support from Business Leaders to ensure effective project close-out and ensure sponsor requirements have been met.",
-          "The Project Leader communicates to People Leaders and Staff on project close-out to ensure adequate time for staff transition plans to new projects."
-        ],
-        red: [
-          "People Leaders request project labor details from the Project Leader.",
-          "People Leaders should assist staff in finding project opportunities that foster their growth and development.",
-          "People Leaders should provide Opportunity Managers and Project Leaders with insights into staff skills and capabilities.",
-          "People Leaders should request updates from Project Leaders on project status and any changes in project scope.",
-          "People Leaders should request feedback on staff performance from Project Leaders.",
-          "People Leaders manage coverage and availability across all projects.",
-          "People Leaders should request support from Project Leaders to ensure effective project close-out and ensure sponsor requirements have been met.",
-          "People Leaders should assist staff with finding new work, advocating for their development and ensuring good-faith collaboration with Project Leaders."
-        ],
-        orange: [
-          "Business Leaders to collaborate with Project Leaders staff plan for pricing purposes",
-          "Business Leaders request ODC from Project Leaders for pricing purposes and support on pricing and estimates.",
-          "Business Leaders should add project numbers and expenses codes.",
-          "Business Leaders should request updates from Project Leaders on project status and any changes in project scope.",
-          "Business Leaders provide guidance on project execution (burn rates, ramp-up/down, etc.).",
-          "Business Leaders should request notification of any changes in staffing allocations or project changes.",
-          "Business Leaders should request details on any trailing costs from Project Leaders.",
-          "Business Leaders should assist Project Leaders achieve a soft landing for staff and ensure that all project requirements have been met."
-        ]
-      };
-
-      function updatePopupBelowContent(timeline, type) {
-        const steps = Array.from(timeline.querySelectorAll('.timeline-step'));
-        const data = popupBelowData[type];
-
-        steps.forEach((step, index) => {
-          const popupBelow = step.querySelector('.timeline-popup-below');
-          if (popupBelow && data[index]) {
-            popupBelow.textContent = data[index];
-          }
-        });
+    const steps = Array.from(timeline.querySelectorAll('.timeline-step'));
+    steps.forEach((step, index) => {
+      const popupBelow = step.querySelector('.timeline-popup-below');
+      if (popupBelow && data[index]) {
+        popupBelow.textContent = data[index];
       }
-  </script>
+    });
+  }
+
+  // Assign titles on initial load for main timeline
+  document.addEventListener('DOMContentLoaded', () => {
+    const mainTimeline = document.querySelector('.timeline-container.main');
+    if (mainTimeline) {
+      assignTitles(mainTimeline);
+    }
+  });
+
+  const popupBelowData = {
+    green: [
+      "Staff should update skills and their tech stature to be able to take on new projects. Staff should also be proactive in identifying project opportunities.",
+      "Staff require support from their People Leader (GL, DM) to proactively identify project opportunities.",
+      "Staff need to be proactive and establish clear channels of communication with Project Leaders.",
+      "When held to a project, staff must be clear on roles and responsibilities.",
+      "Staff must be clear on how much of their time is allocated to a project.",
+      "Staff should request feedback from the Project or Task Leader on their performance.",
+      "Staff should take the initiative and request advance notice from a Project Leader on a project close-out timeline.",
+      "Staff should ensure they deliver on their project commitments in advance of project close-out."
+    ],
+    blue: [
+      "The Project Leader requests project details from the Opportunity Manager.",
+      "The Project Leader partners with Business Leaders on project budget and resource costing.",
+      "The Project Leader defines roles and assigns staff to relevant opportunities.",
+      "The Project Leader tracks financial updates and supports staffing adjustments.",
+      "The Project Leader communicates changes in project scope, schedule, or other issues.",
+      "The Project Leader requests reports on staffing performance.",
+      "The Project Leader ensures effective project close-out and sponsor requirements are met.",
+      "The Project Leader communicates project close-out timelines to People Leaders and staff."
+    ],
+    red: [
+      "People Leaders request project labor details from the Project Leader.",
+      "People Leaders assist staff in finding project opportunities for growth.",
+      "People Leaders provide insights into staff skills to Opportunity Managers and Project Leaders.",
+      "People Leaders request updates on project status and changes in project scope.",
+      "People Leaders request feedback on staff performance.",
+      "People Leaders manage coverage and availability across all projects.",
+      "People Leaders request support for effective project close-out.",
+      "People Leaders assist staff in transitioning to new projects post-project close-out."
+    ],
+    orange: [
+      "Business Leaders collaborate with Project Leaders on staff planning for pricing.",
+      "Business Leaders request ODCs from Project Leaders for pricing purposes.",
+      "Business Leaders add project numbers and expense codes.",
+      "Business Leaders request updates on project status and scope changes.",
+      "Business Leaders provide guidance on project execution (e.g., burn rates).",
+      "Business Leaders request notification of changes in staffing allocations.",
+      "Business Leaders request details on trailing costs.",
+      "Business Leaders assist Project Leaders in achieving project requirements."
+    ]
+  };
+</script>
+
+
   </body>
   </html>
