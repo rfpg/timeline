@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Stacked Timelines</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary-color-1: #1B998B;
@@ -15,19 +16,31 @@
       --popup-border: #ddd;
       --text-color: #333;
       --hover-shadow: rgba(0, 0, 0, 0.2);
+
       /* Define colors for each persona */
+      --maintimeline-color: #5f83cc;
       --staff-color: #1B998B;
       --people-leader-color: #E63946;
       --project-leader-color: #457B9D;
       --business-leader-color: #F4A261;
     }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+      font-weight: lighter;
       margin: 0;
       display: flex;
       flex-direction: row;
       height: 100vh;
       background-color: var(--secondary-color);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Open Sans', Arial, sans-serif; /* Use a modern, clean font */
+      font-weight: 500; /* Light font weight for headings */
+      color: var(--text-color); /* Use a neutral text color */
+      letter-spacing: 0.5px; /* Add slight letter spacing for readability */
+      line-height: 1.3; /* Adjust line height for better readability */
+      margin: 0 0 15px; /* Add spacing below headings */
     }
 
     .filter-buttons {
@@ -45,6 +58,7 @@
 
 
     .filter-btn {
+      position: relative; /* Required for positioning the tooltip */
       width: 60px;
       height: 60px;
       border: none;
@@ -54,6 +68,41 @@
       cursor: pointer;
       transition: transform 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;
     }
+
+    .filter-btn::after {
+      content: attr(data-tooltip); /* Use the data-tooltip attribute for the tooltip text */
+      position: absolute;
+      bottom: 110%; /* Position above the button */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--popup-bg); /* Use a neutral background */
+      color: var(--text-color); /* Neutral text color */
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px var(--hover-shadow);
+      white-space: nowrap; /* Prevent wrapping */
+      opacity: 0; /* Hide by default */
+      visibility: hidden; /* Hide by default */
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+
+    .filter-btn:hover::after {
+      opacity: 1; /* Show on hover */
+      visibility: visible;
+    }
+
+/* 
+    .filter-btn {
+      width: 60px;
+      height: 60px;
+      border: none;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;
+    } */
 
     .timeline-section {
       flex: 1;
@@ -76,7 +125,11 @@
     }
 
     .timeline-container.main {
-      background-color: #f0f0f0;
+      background-color: #f8f9fa; /* Neutral light gray */
+      border: 1px solid #ddd; /* Subtle border */
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+      padding: 20px;
     }
 
     .timeline-container.expanded {
@@ -100,7 +153,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-color: var(--primary-color-1);
+      background-color: var(--maintimeline-color);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -114,6 +167,17 @@
     .timeline-step:hover .circle {
       transform: scale(1.1);
       box-shadow: 0 4px 8px var(--hover-shadow);
+    }
+
+    .timeline-title {
+      margin-bottom: 10px; /* Space between title and timeline */
+      font-size: 1.2rem; /* Slightly smaller font size for elegance */
+      font-weight: 300; /* Light font weight for a modern feel */
+      color: var(--text-color); /* Use neutral text color */
+      text-align: left; /* Align text to the left */
+      font-family: 'Open Sans', Arial, sans-serif; /* Use a light, modern font */
+      letter-spacing: 0.5px; /* Add slight letter spacing for readability */
+      line-height: 1.4; /* Adjust line height for better readability */
     }
 
     .overlay {
@@ -136,23 +200,82 @@
 
     .timeline-popup-above,
     .timeline-popup-below {
-      display: none; /* Hide inline popups */
+      position: absolute;
+      background-color: var(--popup-bg); /* Background color for the popup */
+      border: 1px solid var(--popup-border); /* Border color */
+      border-radius: 8px; /* Rounded corners */
+      padding: 10px; /* Padding for content */
+      font-size: 0.9rem; /* Font size */
+      color: var(--text-color); /* Text color */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+      opacity: 0; /* Hidden by default */
+      visibility: hidden; /* Hidden by default */
+      transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transitions */
+      z-index: 1000; /* Ensure it appears above other elements */
+      max-width: 200px; /* Limit the width of the popup */
+      text-align: center; /* Center-align text */
+      display: none
     }
 
+    .timeline-popup-above {
+      bottom: 110%; /* Position above the node */
+      left: 50%;
+      transform: translateX(-50%); /* Center horizontally */
+    }
+
+    .timeline-popup-below {
+      top: 110%; /* Position below the node */
+      left: 50%;
+      transform: translateX(-50%); /* Center horizontally */
+    }
+
+    /* Show popups on hover */
+    .timeline-step:hover .timeline-popup-above,
+    .timeline-step:hover .timeline-popup-below {
+      opacity: 1; /* Fully visible */
+      visibility: visible; /* Fully visible */
+    }
+
+    /* Add an arrow pointing to the node */
+    .timeline-popup-above::after,
+    .timeline-popup-below::after {
+      content: '';
+      position: absolute;
+      border-style: solid;
+      border-width: 6px;
+      display: block;
+      width: 0;
+    }
+
+    .timeline-popup-above::after {
+      bottom: -6px; /* Position at the bottom of the popup */
+      left: 50%;
+      transform: translateX(-50%);
+      border-color: var(--popup-bg) transparent transparent transparent;
+    }
+
+    .timeline-popup-below::after {
+      top: -6px; /* Position at the top of the popup */
+      left: 50%;
+      transform: translateX(-50%);
+      border-color: transparent transparent var(--popup-bg) transparent;
+    }
+
+
     .filter-btn[data-target="staff"].active {
-      border: 2px solid var(--staff-color); /* Match staff color */
+      border: 4px solid var(--staff-color); /* Match staff color */
     }
 
     .filter-btn[data-target="peopleleader"].active {
-      border: 2px solid var(--people-leader-color); /* Match people leader color */
+      border: 4px solid var(--people-leader-color); /* Match people leader color */
     }
 
     .filter-btn[data-target="projectleader"].active {
-      border: 2px solid var(--project-leader-color); /* Match project leader color */
+      border: 4px solid var(--project-leader-color); /* Match project leader color */
     }
 
     .filter-btn[data-target="businessleader"].active {
-      border: 2px solid var(--business-leader-color); /* Match business leader color */
+      border: 4px solid var(--business-leader-color); /* Match business leader color */
     }
 
 
@@ -177,13 +300,13 @@
 
 <body>
   <div class="filter-buttons">
-    <button class="filter-btn" style="background-image: url('staff.jpg');" data-target="staff"></button>
-    <button class="filter-btn" style="background-image: url('gl.jpg');" data-target="peopleleader"></button>
-    <button class="filter-btn" style="background-image: url('pl.jpg');" data-target="projectleader"></button>
-    <button class="filter-btn" style="background-image: url('bl.jpg');" data-target="businessleader"></button>
+    <button class="filter-btn" style="background-image: url('staff.jpg');" data-target="staff" data-tooltip="Staff"></button>
+    <button class="filter-btn" style="background-image: url('gl.jpg');" data-target="peopleleader" data-tooltip="People Leader"></button>
+    <button class="filter-btn" style="background-image: url('pl.jpg');" data-target="projectleader" data-tooltip="Project Leader"></button>
+    <button class="filter-btn" style="background-image: url('bl.jpg');" data-target="businessleader" data-tooltip="Business Leader"></button>
   </div>
   <div class="timeline-section">
-    <center><h3>Project Timeline (Pre-Award to Project Close)</h3></center>
+    <center><h1>Project Timeline (Pre-Award to Project Close)</h1></center>
     <!-- Main Timeline -->
     <div class="timeline-container main">
     </div>
@@ -200,10 +323,29 @@
 
   <div class="overlay" id="overlay">
     <div class="close-btn" onclick="closeOverlay()">×</div>
-    <div id="overlay-text">Details</div>
+    <div id="overlay-text">Click on a node to display a persona norm.</div>
   </div>
 
   <script>
+
+    let mainTimelineClicked = false;
+
+    document.querySelector('.timeline-container.main').addEventListener('click', () => {
+      if (!mainTimelineClicked) {
+        mainTimelineClicked = true;
+        document.querySelectorAll('.filter-btn').forEach(button => {
+          if (!button.classList.contains('active')) {
+            button.classList.add('active');
+            const target = button.getAttribute('data-target');
+            document.querySelectorAll(`.timeline-container[data-persona="${target}"]`).forEach(timeline => {
+              timeline.style.display = 'grid';
+            });
+          }
+        });
+      }
+    });
+
+
     // Generate Main Timeline Steps
     function generateMainTimelineSteps() {
       return titles
@@ -217,22 +359,22 @@
         .join('');
     }
   
-    // Generate Expanded Timeline Steps
-    function generateTimelineSteps(persona) {
-      const popupData = popupBelowData[persona.toLowerCase().replace(/ /g, '')];
-      if (!popupData) return '';
-  
-      return popupData
-        .map(
-          (text, index) => `
-            <div class="timeline-step" data-step="${index + 1}">
-              <div class="circle">${index < 3 ? `1.${index + 1}` : `2.${index - 2}`}</div>
-              <div class="timeline-popup-above">${titles[index] || 'Title not available'}</div>
-              <div class="timeline-popup-below" data-full-text="${text}">${text.split('.')[0]}.</div>
-            </div>`
-        )
-        .join('');
-    }
+  // Function to dynamically generate expanded timeline steps
+function generateTimelineSteps(persona) {
+  const popupData = popupBelowData[persona.toLowerCase().replace(/ /g, '')];
+  if (!popupData) return '';
+
+  return popupData
+    .map(
+      (text, index) => `
+        <div class="timeline-step" data-step="${index + 1}">
+          <div class="circle">${index < 3 ? `1.${index + 1}` : `2.${index - 2}`}</div>
+          <div class="timeline-popup-above">${titles[index] || 'Title not available'}</div>
+          <div class="timeline-popup-below" data-full-text="${text}">${text}</div>
+        </div>`
+    )
+    .join('');
+}
   
     // Assign Main Timeline Steps
     document.addEventListener('DOMContentLoaded', () => {
@@ -336,14 +478,14 @@
     // Data for Timeline Steps
     const popupBelowData = {
       staff: [
-        "Staff should update skills and be proactive in identifying projects.",
-        "Staff require support from leaders to identify opportunities.",
-        "Staff need clear communication with Project Leaders.",
-        "Staff must understand their roles when held to a project.",
-        "Staff should know their time allocation for a project.",
-        "Staff should request performance feedback.",
-        "Staff should request advance notice for project close-out.",
-        "Staff should deliver on commitments before project close-out."
+        "Staff should <a href='https://example.com/skills' target='_blank'>update skills</a> and be proactive in identifying projects.",
+        "Staff require support from leaders to <a href='https://example.com/opportunities' target='_blank'>identify opportunities</a>.",
+        "Staff need clear communication with <a href='https://example.com/project-leaders' target='_blank'>Project Leaders</a>.",
+        "Staff must understand their <a href='https://example.com/roles' target='_blank'>roles</a> when held to a project.",
+        "Staff should know their <a href='https://example.com/allocation' target='_blank'>time allocation</a> for a project.",
+        "Staff should request <a href='https://example.com/feedback' target='_blank'>performance feedback</a>.",
+        "Staff should request advance notice for <a href='https://example.com/close-out' target='_blank'>project close-out</a>.",
+        "Staff should <a href='https://example.com/commitments' target='_blank'>deliver on commitments</a> before project close-out."
       ],
       peopleleader: [
         "People Leaders request labor details from Project Leaders.",
