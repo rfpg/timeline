@@ -6,356 +6,47 @@
   <title>Interactive Stacked Timelines</title>
   <style>
     :root {
-      
-      --primary-color-1a: #1b998a4d; /* Accessible green */
-      --primary-color-1b: #1b998aaa; /* Accessible green */
-      --primary-color-1c: #1b998ade; /* Accessible green */
-      --primary-color-1d: #1B998B; /* Accessible green */
       --primary-color-1: #1B998B;
-      --primary-color-2: #E63946; /* Accessible red */
-      --primary-color-3: #457B9D; /* Accessible blue */
-      --primary-color-3a: #457B9D;
-      --primary-color-3b:rgba(69, 123, 157, 0.718); /* Accessible blue */
-      --primary-color-4: #F4A261; /* Accessible orange */
+      --primary-color-2: #E63946;
+      --primary-color-3: #457B9D;
+      --primary-color-4: #F4A261;
       --secondary-color: #f9f9f9;
       --popup-bg: white;
       --popup-border: #ddd;
-      --text-color: #978e8e;
+      --text-color: #333;
       --hover-shadow: rgba(0, 0, 0, 0.2);
+      /* Define colors for each persona */
+      --staff-color: #1B998B;
+      --people-leader-color: #E63946;
+      --project-leader-color: #457B9D;
+      --business-leader-color: #F4A261;
     }
-    
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
+      display: flex;
+      flex-direction: row;
+      height: 100vh;
+      background-color: var(--secondary-color);
+    }
+
+    .filter-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center; /* Center buttons horizontally */
+      justify-content: center; /* Center buttons vertically */
       padding: 20px;
       background-color: var(--secondary-color);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transform: scale(0.9); /* Scale everything to 80% */
-      transform-origin: top left; /* Ensure scaling starts from the top left corner */
+      border-right: 1px solid var(--popup-border);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      height: 100vh; /* Make it span the full viewport height */
     }
-    
-    .timeline-section {
-      flex: 2;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      background-color: var(--secondary-color);
-      overflow-y: auto;
-    }
-    
-    .timeline-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 60px; /* Increased gap */
-      position: relative;
-      padding: 80px;
-      width: 90%;
-      max-width: 1000px;
-      overflow-x: auto;
-      white-space: nowrap;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 10px;
-      transition: all 0.3s ease;
-      z-index: 1;
-    }
-    
-    .timeline-container.foreground {
-      z-index: 100;
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-    
-    .timeline-container.main {
-      background-color: #f0f0f0;
-    }
-    
-    .timeline-line {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: #ccc;
-      z-index: 0;
-      transform: translateY(-50%);
-    }
-    
-    .timeline-step {
-      position: relative;
-      text-align: center;
-      cursor: pointer;
-      z-index: 1;
-      
-      opacity: 1;
-      transition: opacity 0.3s ease; /* Smooth transition for opacity */
-    }
-    
-    .timeline-step.opacity-5 { opacity: 1; }
-    .timeline-step.opacity-4 { opacity: 0.75; }
-    .timeline-step.opacity-3 { opacity: 0.75; }
-    .timeline-step.opacity-2 { opacity: 0.75; }
-    .timeline-step.opacity-1 { opacity: 0.75; }
-    
-    
-    .timeline-step .circle {
-      width: 50px; /* Increased size */
-      height: 50px; /* Increased size */
-      border-radius: 50%;
-      margin: 0 auto;
-      box-shadow: 0 2px 4px var(--hover-shadow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 1rem; /* Increased font size */
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      color:black;
-    }
-    
-    .timeline-popup-above,
-    .timeline-popup-below {
-      position: absolute;
-      background: var(--popup-bg);
-      border: 1px solid var(--popup-border);
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 0.9rem;
-      color: var(--text-color);
-      box-shadow: 0 4px 8px var(--hover-shadow);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-      text-align: left;
-      z-index: 1000; /* Set a high z-index value */
-      white-space: normal; /* Allow text to wrap */
-      height: auto;
-      width: 300px; /* Allow width to adjust based on content */
-      max-width: none; /* Remove max-width to prevent cutting off text */
-      color: black;
-    }
-    
-    .timeline-popup-above {
-      top: -100%; /* Position above the step */
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    
-    .timeline-popup-below {
-      top: 100%; /* Position below the step */
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    
-    .timeline-step:hover .timeline-popup-above,
-    .timeline-step:hover .timeline-popup-below {
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .timeline-step.show .timeline-popup-above,
-    .timeline-step.show .timeline-popup-below {
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .timeline-container.expanded {
-      max-height: 1000px;
-      opacity: 1;
-      transform: scaleY(1);
-      transition: all 0.5s ease;
-    }
-    
-    .timeline-container.collapsed {
-      max-height: 0;
-      opacity: 0;
-      transform: scaleY(0);
-      overflow: hidden;
-      transition: all 0.5s ease;
-    }
-    
-    /* Unique colors for expanded timelines */
-    .timeline-container:nth-of-type(3) .circle {
-      background: var(--primary-color-1);
-    }
-    
-    .timeline-container:nth-of-type(4) .circle {
-      background: var(--primary-color-2);
-    }
-    
-    .timeline-container:nth-of-type(5) .circle {
-      background: var(--primary-color-3);
-    }
-    
-    .timeline-container:nth-of-type(6) .circle {
-      background: var(--primary-color-4);
-    }
-    
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .timeline-container {
-        padding: 40px;
-        gap: 30px; /* Adjusted for smaller screens */
-      }
-      
-      .timeline-step .circle {
-        width: 40px; /* Adjusted size */
-        height: 40px; /* Adjusted size */
-        font-size: 0.85rem; /* Adjusted font size */
-      }
-      
-      .timeline-popup-above,
-      .timeline-popup-below {
-        position: absolute;
-        background: var(--popup-bg);
-        border: 1px solid var(--popup-border);
-        border-radius: 8px;
-        padding: 40px;
-        font-size: 0.5rem;
-        color: var(--text-color);
-        box-shadow: 0 4px 8px var(--hover-shadow);
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
-        text-align: left;
-        z-index: 1000; /* Set a high z-index value */
-        white-space: normal; /* Allow text to wrap */
-        height: auto;
-        width: auto; /* Adjust width to fit text */
-        max-width: 700px; /* Optional: Set a maximum width */
-        color: black;
-        font-size: 0.8rem;
-      } 
-    }
-    .triangle {
-      width: 0;
-      height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 20px solid var(--primary-color-3a); /* Changed to border-bottom for upside-down triangle */
-      position: absolute;
-      top: -30px;
-      left: 0%;
-      transform: translateX(0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgb(71, 57, 57);
-      font-weight: bold;
-      font-size: 0.8rem;
-      color:black;
-    }
-    
-    .triangle::after {
-      content: attr(data-text); /* Use data attribute for text */
-      position: absolute;
-      top: -50px; /* Adjusted position */
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1;
-    }
-    
-    .image-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-right: 20px; /* Adjust as needed */
-    }
-    
-    .image-title {
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    
-    .timeline-container img {
-      width: 100px; /* Adjust as needed */
-      height: auto;
-      border-radius: 50%; /* Circular border */
-      border: 3px solid var(--primary-color-3); /* Adjust border color as needed */
-      display: none;
-    }
-    
-    .timeline-container.expanded img {
-      display: block;
-    }
-    
-    .timeline-line {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: #ccc;
-      z-index: 0;
-      transform: translateY(-50%);
-    }
-    
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.1);
-      }
-      100% {
-        transform: scale(1);
-      }
-    }
-    
-    .timeline-container.main .timeline-step[data-step="1"] .circle {
-      animation: pulse 1.5s infinite;
-    }
-    
-    .timeline-container.expanded .timeline-line {
-      left: 200px; /* Adjust to ensure the line doesn't go through the image */
-    }
-    
-    #overlay {
-      position: fixed;
-      top: 0;
-      right: -100%; /* Start completely off-screen */
-      width: 100%; /* Occupy the full viewport width */
-      max-width: 400px; /* Optional: control maximum width */
-      height: 100%;
-      background-color: var(--popup-bg);
-      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-      display: none; /* Hidden by default */
-      flex-direction: column;
-      padding: 20px;
-      transition: right 0.3s ease; /* Smooth sliding transition */
-      overflow-y: auto; /* Allow scrolling if content overflows */
-    }
-    
-    #overlay.show-overlay {
-      right: 20px; /* Slightly offset to the right */
-    }
-    
-    body {
-      overflow-x: hidden; /* Prevent horizontal scrollbars */
-    }
-    
-    .overlay-content {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .close-btn {
-      align-self: flex-end;
-      font-size: 24px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-    
+
+
     .filter-btn {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       border: none;
       border-radius: 50%;
       background-size: cover;
@@ -364,502 +55,340 @@
       transition: transform 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .filter-btn.active {
-      border: 3px solid var(--primary-color-3); /* Blue ring */
-      box-shadow: 0 0 5px var(--primary-color-3);
+    .timeline-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 40px; /* Space between timelines */
+      overflow-y: auto;
     }
 
-    .hidden {
+    .timeline-container {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr); /* Ensure 8 nodes fit horizontally */
+      gap: 20px;
+      align-items: center;
+      background-color: var(--secondary-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .timeline-container.main {
+      background-color: #f0f0f0;
+    }
+
+    .timeline-container.expanded {
+      /* border: 1px solid var(--primary-color-3); */
+      background-color: white;
+    }
+
+    .timeline-container.collapsed {
       display: none;
     }
 
- 
-    
-    
+    .timeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .timeline-step .circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-color-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 2px 4px var(--hover-shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .timeline-step:hover .circle {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px var(--hover-shadow);
+    }
+
+    .overlay {
+      width: 300px;
+      background-color: var(--popup-bg);
+      border-left: 1px solid var(--popup-border);
+      padding: 20px;
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .close-btn {
+      font-size: 20px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      align-self: flex-end;
+    }
+
+    .timeline-popup-above,
+    .timeline-popup-below {
+      display: none; /* Hide inline popups */
+    }
+
+    .filter-btn[data-target="staff"].active {
+      border: 2px solid var(--staff-color); /* Match staff color */
+    }
+
+    .filter-btn[data-target="peopleleader"].active {
+      border: 2px solid var(--people-leader-color); /* Match people leader color */
+    }
+
+    .filter-btn[data-target="projectleader"].active {
+      border: 2px solid var(--project-leader-color); /* Match project leader color */
+    }
+
+    .filter-btn[data-target="businessleader"].active {
+      border: 2px solid var(--business-leader-color); /* Match business leader color */
+    }
+
+
+    /* Node styles with persona colors */
+    .timeline-container[data-persona="staff"] .circle {
+      background-color: var(--staff-color);
+    }
+
+    .timeline-container[data-persona="peopleleader"] .circle {
+      background-color: var(--people-leader-color);
+    }
+
+    .timeline-container[data-persona="projectleader"] .circle {
+      background-color: var(--project-leader-color);
+    }
+
+    .timeline-container[data-persona="businessleader"] .circle {
+      background-color: var(--business-leader-color);
+    }
   </style>
 </head>
+
 <body>
-  <h1>Project Pipeline (Pre-Award to Project Close)</h1>
-  
   <div class="filter-buttons">
-    <button class="filter-btn" data-target="staff" style="background-image: url('staff.jpg');"></button>
-    <button class="filter-btn" data-target="people leader" style="background-image: url('gl.jpg');"></button>
-    <button class="filter-btn" data-target="project leader" style="background-image: url('pl.jpg');"></button>
-    <button class="filter-btn" data-target="business leader" style="background-image: url('bl.jpg');"></button>
+    <button class="filter-btn" style="background-image: url('staff.jpg');" data-target="staff"></button>
+    <button class="filter-btn" style="background-image: url('gl.jpg');" data-target="peopleleader"></button>
+    <button class="filter-btn" style="background-image: url('pl.jpg');" data-target="projectleader"></button>
+    <button class="filter-btn" style="background-image: url('bl.jpg');" data-target="businessleader"></button>
   </div>
-  
-  <div class="timeline-section" style="align-items: flex-start;">
+  <div class="timeline-section">
+    <center><h3>Project Timeline (Pre-Award to Project Close)</h3></center>
     <!-- Main Timeline -->
     <div class="timeline-container main">
-      <div class="timeline-line"></div>
-      <!-- Seven nodes -->
-      <div class="timeline-step" data-step="1">
-        <div class="triangle" data-text="Lead"></div>
-        <div class="circle" style="background-color: var(--primary-color-3b);">1.1</div>
-        <div class="timeline-popup-above">${titles[0]}</div>
-        <div class="timeline-popup-below">Opportunity Manager identifies an Opportunity and suitable Project Leader(s)</div>
-      </div>
-      <div class="timeline-step" data-step="2">
-        <div class="triangle" data-text="Confirmed"></div>
-        <div class="circle" style="background-color: var(--primary-color-4);">1.2</div>
-        <div class="timeline-popup-above">${titles[1]}</div>
-        <div class="timeline-popup-below">Opportunity Manager works with assigned Project Leader and Financial Analyst hold suitable Staff.</div>
-      </div>
-      <div class="timeline-step" data-step="3">
-        <div class="triangle" data-text="High-Confidence"></div>
-        <div class="circle" style="background-color: var(--primary-color-4);">1.3</div>
-        <div class="timeline-popup-above">${titles[2]}</div>
-        <div class="timeline-popup-below">Opportunity Manager works with Financial Analyst and Business Partners to acquire Costpoint number.</div>
-      </div>
-      <div class="timeline-step" data-step="4">
-        <div class="triangle" data-text="Awarded" ></div>
-        <div class="circle" style="background-color: var(--primary-color-1a);">2.1</div>
-        <div class="timeline-popup-above">${titles[3]}</div>
-        <div class="timeline-popup-below">Project Leaders, People Leaders and Staff are in regular communication. Staff are held to an Opportunity.</div>
-      </div>
-      <div class="timeline-step" data-step="5">
-        <div class="circle" style="background-color: var(--primary-color-1b);">2.2</div>
-        <div class="timeline-popup-above">${titles[4]}</div>
-        <div class="timeline-popup-below">Project Leaders, People Leaders and Staff are in regular communication.</div>
-      </div>
-      <div class="timeline-step" data-step="6">
-        <div class="circle" style="background-color: var(--primary-color-1c);">2.3</div>
-        <div class="timeline-popup-above">${titles[5]}</div>
-        <div class="timeline-popup-below">Project Leaders, People Leaders and Staff are in regular communication.</div>
-      </div>
-      <div class="timeline-step" data-step="7">
-        <div class="circle" style="background-color: var(--primary-color-1d);">2.4</div>
-        <div class="timeline-popup-above">${titles[6]}</div>
-        <div class="timeline-popup-below">Project Leaders, People Leaders and Staff are in regular communication.</div>
-      </div>
-      <div class="timeline-step" data-step="8">
-        <div class="circle"style="background-color: var(--primary-color-1d);">2.5</div>
-        <div class="timeline-popup-above">${titles[7]}</div>
-        <div class="timeline-popup-below">Project Leaders close out project, Staff are unheld and respective People Leaders are notified of the project completion.</div>
-        <div class="triangle" data-text="Project Close"></div>
-        
-      </div>   
     </div>
-    
-    <!-- Overlay -->
-    <div id"overlay-wrapper>
-      <div id="overlay" class="overlay">
-        <div class="overlay-content">
-          <span class="close-btn" onclick="closeOverlay()">&times;</span>
-          <div id="overlay-text"></div>
-        </div>
-      </div>
+    <!-- Dynamic timelines for personas -->
+    <div class="timeline-container collapsed" data-persona="staff">
     </div>
-    
-    <!-- Expandable Timelines -->
-    <!-- Green Timeline -->
-    <div class="timeline-container collapsed">
-      <div class="timeline-line"></div>
-      <div class="image-container" style="padding-right: 20px;">
-        <div class="image-title">Staff</div>
-        <img src="staff.jpg" alt="Staff">
-      </div>
-      <div class="timeline-step" data-step="1">
-        <div class="circle">1.1</div>
-        <div class="timeline-popup-above">${titles[0]}</div>
-        <div class="timeline-popup-below">Details for Green Step 1</div>
-      </div>
-      <div class="timeline-step" data-step="2">
-        <div class="circle">1.2</div>
-        <div class="timeline-popup-above">${titles[1]}</div>
-        <div class="timeline-popup-below">Details for Green Step 2</div>
-      </div>
-      <div class="timeline-step" data-step="3">
-        <div class="circle">1.3</div>
-        <div class="timeline-popup-above">${titles[2]}</div>
-        <div class="timeline-popup-below">Details for Green Step 3</div>
-      </div>
-      <div class="timeline-step" data-step="4">
-        <div class="circle">2.1</div>
-        <div class="timeline-popup-above">${titles[3]}</div>
-        <div class="timeline-popup-below">Details for Green Step 4</div>
-      </div>
-      <div class="timeline-step" data-step="5">
-        <div class="circle">2.2</div>
-        <div class="timeline-popup-above">${titles[4]}</div>
-        <div class="timeline-popup-below">Details for Green Step 5</div>
-      </div>
-      <div class="timeline-step" data-step="6">
-        <div class="circle">2.3</div>
-        <div class="timeline-popup-above">${titles[5]}</div>
-        <div class="timeline-popup-below">Details for Green Step 6</div>
-      </div>
-      <div class="timeline-step" data-step="7">
-        <div class="circle">2.4</div>
-        <div class="timeline-popup-above">${titles[6]}</div>
-        <div class="timeline-popup-below">Details for Green Step 7</div>
-      </div>
-      <div class="timeline-step" data-step="8">
-        <div class="circle">2.5</div>
-        <div class="timeline-popup-above">${titles[7]}</div>
-        <div class="timeline-popup-below">Details for Green Step 8</div>
-      </div>
+    <div class="timeline-container collapsed" data-persona="peopleleader">
     </div>
-    
-    <!-- Red Timeline -->
-    <div class="timeline-container collapsed">
-      <div class="timeline-line"></div>
-      <div class="image-container">
-        <div class="image-title">People Leader (GL, DM)</div>
-        <img src="gl.jpg" alt="People Leader (GL, DM)">
-      </div>
-      <div class="timeline-step" data-step="1">
-        <div class="circle">1.1</div>
-        <div class="timeline-popup-above">${titles[0]}</div>
-        <div class="timeline-popup-below">Details for Red Step 1</div>
-      </div>
-      <div class="timeline-step" data-step="2">
-        <div class="circle">1.2</div>
-        <div class="timeline-popup-above">${titles[1]}</div>
-        <div class="timeline-popup-below">Details for Red Step 2</div>
-      </div>
-      <div class="timeline-step" data-step="3">
-        <div class="circle">1.3</div>
-        <div class="timeline-popup-above">${titles[2]}</div>
-        <div class="timeline-popup-below">Details for Red Step 3</div>
-      </div>
-      <div class="timeline-step" data-step="4">
-        <div class="circle">2.1</div>
-        <div class="timeline-popup-above">${titles[3]}</div>
-        <div class="timeline-popup-below">Details for Red Step 4</div>
-      </div>
-      <div class="timeline-step" data-step="5">
-        <div class="circle">2.2</div>
-        <div class="timeline-popup-above">${titles[4]}</div>
-        <div class="timeline-popup-below">Details for Red Step 5</div>
-      </div>
-      <div class="timeline-step" data-step="6">
-        <div class="circle">2.3</div>
-        <div class="timeline-popup-above">${titles[5]}</div>
-        <div class="timeline-popup-below">Details for Red Step 6</div>
-      </div>
-      <div class="timeline-step" data-step="7">
-        <div class="circle">2.4</div>
-        <div class="timeline-popup-above">${titles[6]}</div>
-        <div class="timeline-popup-below">Details for Red Step 7</div>
-      </div>
-      <div class="timeline-step" data-step="8">
-        <div class="circle">2.5</div>
-        <div class="timeline-popup-above">${titles[7]}</div>
-        <div class="timeline-popup-below">Details for Red Step 8</div>
-      </div>
+    <div class="timeline-container collapsed" data-persona="projectleader">
     </div>
-    
-    <!-- Blue Timeline -->
-    <div class="timeline-container collapsed">
-      <div class="timeline-line"></div>
-      <div class="image-container">
-        <div class="image-title">Project Leader (PL)</div>
-        <img src="pl.jpg" alt="Project Leader">
-      </div>
-      <div class="timeline-step" data-step="1">
-        <div class="circle">1.1</div>
-        <div class="timeline-popup-above">${titles[0]}</div>
-        <div class="timeline-popup-below">Details for Blue Step 1</div>
-      </div>
-      <div class="timeline-step" data-step="2">
-        <div class="circle">1.2</div>
-        <div class="timeline-popup-above">${titles[1]}</div>
-        <div class="timeline-popup-below">Details for Blue Step 2</div>
-      </div>
-      <div class="timeline-step" data-step="3">
-        <div class="circle">1.3</div>
-        <div class="timeline-popup-above">${titles[2]}</div>
-        <div class="timeline-popup-below">Details for Blue Step 3</div>
-      </div>
-      <div class="timeline-step" data-step="4">
-        <div class="circle">2.1</div>
-        <div class="timeline-popup-above">${titles[3]}</div>
-        <div class="timeline-popup-below">Details for Blue Step 4</div>
-      </div>
-      <div class="timeline-step" data-step="5">
-        <div class="circle">2.2</div>
-        <div class="timeline-popup-above">${titles[4]}</div>
-        <div class="timeline-popup-below">Details for Blue Step 5</div>
-      </div>
-      <div class="timeline-step" data-step="6">
-        <div class="circle">2.3</div>
-        <div class="timeline-popup-above">${titles[5]}</div>
-        <div class="timeline-popup-below">Details for Blue Step 6</div>
-      </div>
-      <div class="timeline-step" data-step="7">
-        <div class="circle">2.4</div>
-        <div class="timeline-popup-above">${titles[6]}</div>
-        <div class="timeline-popup-below">Details for Blue Step 7</div>
-      </div>
-      <div class="timeline-step" data-step="8">
-        <div class="circle">2.5</div>
-        <div class="timeline-popup-above">${titles[7]}</div>
-        <div class="timeline-popup-below">Details for Blue Step 8</div>
-      </div>
-    </div>
-    
-    <!-- Orange Timeline -->
-    <div class="timeline-container collapsed">
-      <div class="timeline-line"></div>
-      <div class="image-container">
-        <div class="image-title">Business Leader (FA)</div>
-        <img src="bl.jpg" alt="Business Leader (Financial Analysts)">
-      </div>
-      <div class="timeline-step" data-step="1">
-        <div class="circle">1.1</div>
-        <div class="timeline-popup-above">${titles[0]}</div>
-        <div class="timeline-popup-below">Details for Orange Step 1</div>
-      </div>
-      <div class="timeline-step" data-step="2">
-        <div class="circle">1.2</div>
-        <div class="timeline-popup-above">${titles[1]}</div>
-        <div class="timeline-popup-below">Details for Orange Step 2</div>
-      </div>
-      <div class="timeline-step" data-step="3">
-        <div class="circle">1.3</div>
-        <div class="timeline-popup-above">${titles[2]}</div>
-        <div class="timeline-popup-below">Details for Orange Step 3</div>
-      </div>
-      <div class="timeline-step" data-step="4">
-        <div class="circle">2.1</div>
-        <div class="timeline-popup-above">${titles[3]}</div>
-        <div class="timeline-popup-below">Details for Orange Step 4</div>
-      </div>
-      <div class="timeline-step" data-step="5">
-        <div class="circle">2.2</div>
-        <div class="timeline-popup-above">${titles[4]}</div>
-        <div class="timeline-popup-below">Details for Orange Step 5</div>
-      </div>
-      <div class="timeline-step" data-step="6">
-        <div class="circle">2.3</div>
-        <div class="timeline-popup-above">${titles[5]}</div>
-        <div class="timeline-popup-below">Details for Orange Step 6</div>
-      </div>
-      <div class="timeline-step" data-step="7">
-        <div class="circle">2.4</div>
-        <div class="timeline-popup-above">${titles[6]}</div>
-        <div class="timeline-popup-below">Details for Orange Step 7</div>
-      </div>
-      <div class="timeline-step" data-step="8">
-        <div class="circle">2.5</div>
-        <div class="timeline-popup-above">${titles[7]}</div>
-        <div class="timeline-popup-below">Details for Orange Step 8</div>
-      </div>
+    <div class="timeline-container collapsed" data-persona="businessleader">
     </div>
   </div>
-  
+
+  <div class="overlay" id="overlay">
+    <div class="close-btn" onclick="closeOverlay()">×</div>
+    <div id="overlay-text">Details</div>
+  </div>
+
   <script>
-    // Toggle expanded timelines from main timeline
-    document.querySelectorAll('.timeline-container.main .timeline-step').forEach(step => {
-      step.addEventListener('click', () => {
-        const expandedTimelines = document.querySelectorAll('.timeline-container:not(.main)');
-        expandedTimelines.forEach(timeline => {
-          timeline.classList.add('expanded');
-          timeline.classList.remove('collapsed');
-          assignTitles(timeline);
-          updatePopupBelowContent(timeline); // Update popup content based on persona
-          truncatePopupBelow(timeline); // Truncate popup-below text for expanded timelines
-        });
-      });
-    });
-    
-    // Show popups for corresponding nodes in expanded timelines
-    document.querySelectorAll('.timeline-container:not(.main) .timeline-step').forEach(step => {
-      step.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const stepNumber = step.getAttribute('data-step');
-        document.querySelectorAll(`.timeline-container.expanded .timeline-step[data-step="${stepNumber}"]`).forEach(matchingStep => {
-          matchingStep.classList.toggle('show');
-        });
-        const container = step.closest('.timeline-container');
-        document.querySelectorAll('.timeline-container').forEach(c => c.classList.remove('foreground'));
-        container.classList.add('foreground');
-      });
-    });
-    
-    // Show overlay when clicking on a timeline step
-    document.querySelectorAll('.timeline-step').forEach(step => {
-      step.addEventListener('click', function() {
-        const overlay = document.getElementById('overlay');
-        const overlayText = document.getElementById('overlay-text');
-        const popupAbove = this.querySelector('.timeline-popup-above').innerHTML;
-        const fullPopupBelow = this.querySelector('.timeline-popup-below').dataset.fullText || this.querySelector('.timeline-popup-below').textContent;
-        
-        overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${fullPopupBelow}</p>`;
-        overlay.style.display = 'flex';
-        overlay.classList.add('show-overlay');
-      });
-    });
-    
-    // Close overlay function
-    function closeOverlay() {
-      const overlay = document.getElementById('overlay');
-      overlay.classList.remove('show-overlay');
-      setTimeout(() => {
-        overlay.style.display = 'none';
-      }, 300); // Matches CSS transition time
+    // Generate Main Timeline Steps
+    function generateMainTimelineSteps() {
+      return titles
+        .map(
+          (title, index) => `
+            <div class="timeline-step" data-step="${index + 1}">
+              <div class="circle">${index < 3 ? `1.${index + 1}` : `2.${index - 2}`}</div>
+              <div class="timeline-popup-above">${title}</div>
+            </div>`
+        )
+        .join('');
     }
-    
-    // Remove foreground when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.timeline-container') && !e.target.closest('#overlay')) {
-        document.querySelectorAll('.timeline-container').forEach(container => {
-          container.classList.remove('foreground');
-        });
-      }
-    });
-    
-    // Stop pulse animation on click
-    document.querySelector('.timeline-container.main .timeline-step[data-step="1"] .circle').addEventListener('click', function() {
-      this.style.animation = 'none';
-    });
-
-
-    document.querySelectorAll('.filter-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    const target = button.getAttribute('data-target');
-    const timelines = document.querySelectorAll('.timeline-container');
-
-    // Toggle the active class for the clicked button
-    button.classList.toggle('active');
-
-    // Determine if the button is now active
-    const isActive = button.classList.contains('active');
-
-    // Show or hide timelines based on button's active state
-    timelines.forEach(timeline => {
-      const title = timeline.querySelector('.image-title');
-      if (title) {
-        const persona = title.textContent.trim().toLowerCase();
-        if (persona.includes(target)) {
-          timeline.classList.toggle('hidden', !isActive);
-        }
-      }
-    });
-  });
-});
-
-    
-    // Function to truncate text in popup-below
-    function truncatePopupBelow(timeline) {
-      const steps = timeline.querySelectorAll('.timeline-popup-below');
-      steps.forEach(popup => {
-        const fullText = popup.textContent.trim();
-        const truncatedText = fullText.split('.')[0] + '.';
-        popup.dataset.fullText = fullText; // Store full text for overlay
-        popup.textContent = truncatedText; // Display truncated text
-      });
+  
+    // Generate Expanded Timeline Steps
+    function generateTimelineSteps(persona) {
+      const popupData = popupBelowData[persona.toLowerCase().replace(/ /g, '')];
+      if (!popupData) return '';
+  
+      return popupData
+        .map(
+          (text, index) => `
+            <div class="timeline-step" data-step="${index + 1}">
+              <div class="circle">${index < 3 ? `1.${index + 1}` : `2.${index - 2}`}</div>
+              <div class="timeline-popup-above">${titles[index] || 'Title not available'}</div>
+              <div class="timeline-popup-below" data-full-text="${text}">${text.split('.')[0]}.</div>
+            </div>`
+        )
+        .join('');
     }
-    
-    // Titles for top pop-up
-    const titles = [
-    "1.1 Identify Opportunity",
-    "1.2 Mature Opportunity to High Confidence",
-    "1.3 Manage High Confidence Opportunity",
-    "2.1 Launch Project",
-    "2.2 Manage Project",
-    "2.3 Report Progress",
-    "2.4 Deliver Results",
-    "2.5 Close Project"
-    ];
-    
-    // Function to assign titles to popups
-    function assignTitles(container) {
-      container.querySelectorAll('.timeline-step').forEach((step, index) => {
-        const popupAbove = step.querySelector('.timeline-popup-above');
-        if (popupAbove) {
-          if (index < titles.length) {
-            popupAbove.textContent = titles[index];
-          } else {
-            popupAbove.textContent = "Title not available";
-          }
-        }
-      });
-    }
-    
-    // Function to update popup-below content based on persona
-    function updatePopupBelowContent(timeline) {
-      const persona = timeline.querySelector('.image-title').textContent.trim().toLowerCase();
-      let data;
-      switch (persona) {
-        case 'staff':
-        data = popupBelowData.green;
-        break;
-        case 'people leader (gl, dm)':
-        data = popupBelowData.red;
-        break;
-        case 'project leader (pl)':
-        data = popupBelowData.blue;
-        break;
-        case 'business leader (fa)':
-        data = popupBelowData.orange;
-        break;
-        default:
-        return;
-      }
-      
-      const steps = Array.from(timeline.querySelectorAll('.timeline-step'));
-      steps.forEach((step, index) => {
-        const popupBelow = step.querySelector('.timeline-popup-below');
-        if (popupBelow && data[index]) {
-          popupBelow.textContent = data[index];
-        }
-      });
-    }
-    
-    // Assign titles on initial load for main timeline
+  
+    // Assign Main Timeline Steps
     document.addEventListener('DOMContentLoaded', () => {
       const mainTimeline = document.querySelector('.timeline-container.main');
       if (mainTimeline) {
-        assignTitles(mainTimeline);
+        mainTimeline.innerHTML += generateMainTimelineSteps();
+      }
+  
+      document.querySelectorAll('.timeline-container.collapsed').forEach(container => {
+        const persona = container.getAttribute('data-persona');
+        if (persona) {
+          container.innerHTML = generateTimelineSteps(persona);
+        }
+      });
+    });
+  
+    // Filter Button Logic
+    document.querySelectorAll('.filter-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const target = button.getAttribute('data-target');
+        const timelines = document.querySelectorAll('.timeline-container');
+  
+        button.classList.toggle('active');
+        const isActive = button.classList.contains('active');
+  
+        // Toggle active state for the button
+        // button.style.border = isActive ? '2px solid var(--primary-color-3)' : 'none';
+  
+        timelines.forEach(timeline => {
+          const persona = timeline.getAttribute('data-persona');
+          if (persona && persona.includes(target)) {
+            timeline.style.display = isActive ? 'grid' : 'none';
+          }
+        });
+      });
+    });
+  
+    // Expand Main Timeline
+    document.querySelector('.timeline-container.main').addEventListener('click', () => {
+      document.querySelectorAll('.timeline-container.collapsed').forEach(timeline => {
+        timeline.classList.toggle('expanded');
+        timeline.classList.toggle('collapsed');
+        timeline.style.display = timeline.classList.contains('expanded') ? 'grid' : 'none';
+      });
+    });
+  
+    // Overlay Logic
+    document.addEventListener('click', e => {
+      const timelineStep = e.target.closest('.timeline-step');
+      if (timelineStep) {
+        const overlay = document.getElementById('overlay');
+        const overlayText = document.getElementById('overlay-text');
+        const popupAbove = timelineStep.querySelector('.timeline-popup-above')?.textContent || '';
+        const fullPopupBelow = timelineStep.querySelector('.timeline-popup-below')?.dataset.fullText || '';
+  
+        overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${fullPopupBelow}</p>`;
+        overlay.style.display = 'flex';
       }
     });
-    
+  
+    // Close Overlay
+    function closeOverlay() {
+      document.getElementById('overlay').style.display = 'none';
+    }
+  
+    // Hover Effect for Popups
+    document.addEventListener('mouseover', e => {
+      const timelineStep = e.target.closest('.timeline-step');
+      if (timelineStep) {
+        const popupAbove = timelineStep.querySelector('.timeline-popup-above');
+        const popupBelow = timelineStep.querySelector('.timeline-popup-below');
+  
+        if (popupAbove) {
+          popupAbove.style.opacity = '1';
+          popupAbove.style.visibility = 'visible';
+        }
+        if (popupBelow) {
+          popupBelow.style.opacity = '1';
+          popupBelow.style.visibility = 'visible';
+        }
+      }
+    });
+  
+    document.addEventListener('mouseout', e => {
+      const timelineStep = e.target.closest('.timeline-step');
+      if (timelineStep) {
+        const popupAbove = timelineStep.querySelector('.timeline-popup-above');
+        const popupBelow = timelineStep.querySelector('.timeline-popup-below');
+  
+        if (popupAbove) {
+          popupAbove.style.opacity = '0';
+          popupAbove.style.visibility = 'hidden';
+        }
+        if (popupBelow) {
+          popupBelow.style.opacity = '0';
+          popupBelow.style.visibility = 'hidden';
+        }
+      }
+    });
+  
+    // Data for Timeline Steps
     const popupBelowData = {
-      green: [
-      "Staff should update skills and their tech stature to be able to take on new projects. Staff should also be proactive in identifying project opportunities.",
-      "Staff require support from their People Leader (GL, DM) to proactively identify project opportunities.",
-      "Staff need to be proactive and establish clear channels of communication with Project Leaders.",
-      "When held to a project, staff must be clear on roles and responsibilities.",
-      "Staff must be clear on how much of their time is allocated to a project.",
-      "Staff should request feedback from the Project or Task Leader on their performance.",
-      "Staff should take the initiative and request advance notice from a Project Leader on a project close-out timeline.",
-      "Staff should ensure they deliver on their project commitments in advance of project close-out."
+      staff: [
+        "Staff should update skills and be proactive in identifying projects.",
+        "Staff require support from leaders to identify opportunities.",
+        "Staff need clear communication with Project Leaders.",
+        "Staff must understand their roles when held to a project.",
+        "Staff should know their time allocation for a project.",
+        "Staff should request performance feedback.",
+        "Staff should request advance notice for project close-out.",
+        "Staff should deliver on commitments before project close-out."
       ],
-      blue: [
-      "The Project Leader requests project details from the Opportunity Manager.",
-      "The Project Leader partners with Business Leaders on project budget and resource costing.",
-      "The Project Leader defines roles and assigns staff to relevant opportunities.",
-      "The Project Leader tracks financial updates and supports staffing adjustments.",
-      "The Project Leader communicates changes in project scope, schedule, or other issues.",
-      "The Project Leader requests reports on staffing performance.",
-      "The Project Leader ensures effective project close-out and sponsor requirements are met.",
-      "The Project Leader communicates project close-out timelines to People Leaders and staff."
+      peopleleader: [
+        "People Leaders request labor details from Project Leaders.",
+        "People Leaders assist staff in finding growth opportunities.",
+        "People Leaders provide insights into staff skills.",
+        "People Leaders request updates on project changes.",
+        "People Leaders request feedback on staff performance.",
+        "People Leaders manage coverage across projects.",
+        "People Leaders support project close-out.",
+        "People Leaders assist staff transitioning to new projects."
       ],
-      red: [
-      "People Leaders request project labor details from the Project Leader.",
-      "People Leaders assist staff in finding project opportunities for growth.",
-      "People Leaders provide insights into staff skills to Opportunity Managers and Project Leaders.",
-      "People Leaders request updates on project status and changes in project scope.",
-      "People Leaders request feedback on staff performance.",
-      "People Leaders manage coverage and availability across all projects.",
-      "People Leaders request support for effective project close-out.",
-      "People Leaders assist staff in transitioning to new projects post-project close-out."
+      projectleader: [
+        "Project Leaders request project details from managers.",
+        "Project Leaders collaborate on budgets and resources.",
+        "Project Leaders define roles and assign staff.",
+        "Project Leaders track financial updates.",
+        "Project Leaders communicate scope changes.",
+        "Project Leaders request performance reports.",
+        "Project Leaders ensure project close-out.",
+        "Project Leaders notify close-out timelines."
       ],
-      orange: [
-      "Business Leaders collaborate with Project Leaders on staff planning for pricing.",
-      "Business Leaders request ODCs from Project Leaders for pricing purposes.",
-      "Business Leaders add project numbers and expense codes.",
-      "Business Leaders request updates on project status and scope changes.",
-      "Business Leaders provide guidance on project execution (e.g., burn rates).",
-      "Business Leaders request notification of changes in staffing allocations.",
-      "Business Leaders request details on trailing costs.",
-      "Business Leaders assist Project Leaders in achieving project requirements."
+      businessleader: [
+        "Business Leaders collaborate on staff planning.",
+        "Business Leaders request pricing details.",
+        "Business Leaders add project codes.",
+        "Business Leaders request status updates.",
+        "Business Leaders guide on execution (e.g., burn rates).",
+        "Business Leaders track allocation changes.",
+        "Business Leaders request trailing cost details.",
+        "Business Leaders ensure project requirement completion."
       ]
     };
-  </script>
   
+    const titles = [
+      "1.1 Identify Opportunity",
+      "1.2 Mature Opportunity to High Confidence",
+      "1.3 Manage High Confidence Opportunity",
+      "2.1 Launch Project",
+      "2.2 Manage Project",
+      "2.3 Report Progress",
+      "2.4 Deliver Results",
+      "2.5 Close Project"
+    ];
+  </script>
+   
   
 </body>
 </html>
