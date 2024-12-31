@@ -431,10 +431,17 @@
     // Function to update the overlay content
     function updateOverlay() {
       const overlayText = document.getElementById('overlay-text');
+
       if (Object.keys(selectedNodes).length === 0) {
         overlayText.innerHTML = '<p>No nodes selected. Click a node to see details.</p>';
       } else {
         overlayText.innerHTML = Object.entries(selectedNodes)
+          .sort(([titleA], [titleB]) => {
+            // Sort titles based on numeric order (e.g., "1.1", "2.5")
+            const [prefixA, suffixA] = titleA.split('.').map(Number);
+            const [prefixB, suffixB] = titleB.split('.').map(Number);
+            return prefixA - prefixB || suffixA - suffixB;
+          })
           .map(
             ([title, texts]) => `
               <div>
@@ -444,6 +451,7 @@
           )
           .join('');
       }
+
       const overlay = document.getElementById('overlay');
       overlay.style.display = 'flex'; // Ensure the overlay is visible
     }
