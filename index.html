@@ -92,6 +92,14 @@
       visibility: visible;
     }
 
+    .step-title {
+      font-size: 10px;
+      color: var(--text-color); /* Neutral text color */
+      margin-bottom: 5px; /* Add spacing between title and circle */
+      text-align: center; /* Center-align titles */
+      white-space: wrap; /* Prevent text wrapping */
+    }
+
     .timeline-section {
       flex: 1;
       display: flex;
@@ -353,14 +361,14 @@
     });
 
 
-    // Generate Main Timeline Steps
+    // Generate Main Timeline Steps with Titles Above Circles
     function generateMainTimelineSteps() {
       return titles
         .map(
           (title, index) => `
             <div class="timeline-step" data-step="${index + 1}">
+              <div class="step-title">${title}</div> <!-- Add title above the circle -->
               <div class="circle">${index < 3 ? `1.${index + 1}` : `2.${index - 2}`}</div>
-              <div class="timeline-popup-above">${title}</div>
             </div>`
         )
         .join('');
