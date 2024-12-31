@@ -92,18 +92,6 @@
       visibility: visible;
     }
 
-/* 
-    .filter-btn {
-      width: 60px;
-      height: 60px;
-      border: none;
-      border-radius: 50%;
-      background-size: cover;
-      background-position: center;
-      cursor: pointer;
-      transition: transform 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;
-    } */
-
     .timeline-section {
       flex: 1;
       display: flex;
@@ -160,13 +148,23 @@
       font-size: 14px;
       font-weight: bold;
       color: white;
-      box-shadow: 0 2px 4px var(--hover-shadow);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      opacity: 0.8; /* Default muted state */
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
     }
 
     .timeline-step:hover .circle {
+      opacity: 1;
       transform: scale(1.1);
       box-shadow: 0 4px 8px var(--hover-shadow);
+    }
+
+    /* Selected state */
+    .timeline-step.selected .circle {
+      opacity: 1; /* Fully bright */
+      transform: scale(1.2); /* Slightly larger */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* Glow effect */
+      border: 2px solid #333; /* Neutral black border for clarity */
+      background-color: #ffd700; /* Brighter yellow for selected state */
     }
 
     .timeline-title {
@@ -295,6 +293,12 @@
     .timeline-container[data-persona="businessleader"] .circle {
       background-color: var(--business-leader-color);
     }
+
+    .timeline-step.selected .circle {
+      border: 2px solid #1B998B; /* Highlight selected nodes */
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
   </style>
 </head>
 
@@ -327,7 +331,10 @@
   </div>
 
   <script>
+    // Initialize an array to store selected nodes
+    let selectedNodes = [];
 
+    // Flag to track if the main timeline has been clicked
     let mainTimelineClicked = false;
 
     document.querySelector('.timeline-container.main').addEventListener('click', () => {
@@ -359,23 +366,23 @@
         .join('');
     }
   
-  // Function to dynamically generate expanded timeline steps
-function generateTimelineSteps(persona) {
-  const popupData = popupBelowData[persona.toLowerCase().replace(/ /g, '')];
-  if (!popupData) return '';
+    // Function to dynamically generate expanded timeline steps
+    function generateTimelineSteps(persona) {
+      const popupData = popupBelowData[persona.toLowerCase().replace(/ /g, '')];
+      if (!popupData) return '';
 
-  return popupData
-    .map(
-      (text, index) => `
-        <div class="timeline-step" data-step="${index + 1}">
-          <div class="circle">${index < 3 ? `1.${index + 1}` : `2.${index - 2}`}</div>
-          <div class="timeline-popup-above">${titles[index] || 'Title not available'}</div>
-          <div class="timeline-popup-below" data-full-text="${text}">${text}</div>
-        </div>`
-    )
-    .join('');
-}
-  
+      return popupData
+        .map(
+          (text, index) => `
+            <div class="timeline-step" data-step="${index + 1}">
+              <div class="circle">${index < 3 ? `1.${index + 1}` : `2.${index - 2}`}</div>
+              <div class="timeline-popup-above">${titles[index] || 'Title not available'}</div>
+              <div class="timeline-popup-below" data-full-text="${text}">${text}</div>
+            </div>`
+        )
+        .join('');
+    }
+    
     // Assign Main Timeline Steps
     document.addEventListener('DOMContentLoaded', () => {
       const mainTimeline = document.querySelector('.timeline-container.main');
@@ -420,115 +427,153 @@ function generateTimelineSteps(persona) {
         timeline.style.display = timeline.classList.contains('expanded') ? 'grid' : 'none';
       });
     });
-  
-    // Overlay Logic
-    document.addEventListener('click', e => {
+
+    // Function to update the overlay content
+    function updateOverlay() {
+      const overlayText = document.getElementById('overlay-text');
+      if (Object.keys(selectedNodes).length === 0) {
+        overlayText.innerHTML = '<p>No nodes selected. Click a node to see details.</p>';
+      } else {
+        overlayText.innerHTML = Object.entries(selectedNodes)
+          .map(
+            ([title, texts]) => `
+              <div>
+                <h3>${title}</h3>
+                <p>${texts.join('<br><br>')}</p> <!-- Add extra spacing between texts -->
+              </div>`
+          )
+          .join('');
+      }
+      const overlay = document.getElementById('overlay');
+      overlay.style.display = 'flex'; // Ensure the overlay is visible
+    }
+
+    // Event listener for node toggling
+    document.addEventListener('click', (e) => {
       const timelineStep = e.target.closest('.timeline-step');
+      const parentTimeline = timelineStep?.closest('.timeline-container');
+
+      // Ignore main timeline nodes
+      if (parentTimeline?.classList.contains('main')) {
+        return;
+      }
+
       if (timelineStep) {
-        const overlay = document.getElementById('overlay');
-        const overlayText = document.getElementById('overlay-text');
-        const popupAbove = timelineStep.querySelector('.timeline-popup-above')?.textContent || '';
-        const fullPopupBelow = timelineStep.querySelector('.timeline-popup-below')?.dataset.fullText || '';
-  
-        overlayText.innerHTML = `<h3>${popupAbove}</h3><p>${fullPopupBelow}</p>`;
-        overlay.style.display = 'flex';
+        const title = timelineStep.querySelector('.timeline-popup-above')?.textContent || 'Title not available';
+        const text = timelineStep.querySelector('.timeline-popup-below')?.dataset.fullText || 'Text not available';
+
+        // Check if the node is already selected
+        if (!selectedNodes[title]) {
+          selectedNodes[title] = [];
+        }
+
+        const textIndex = selectedNodes[title].indexOf(text);
+
+        if (textIndex > -1) {
+          // Node is already selected, remove the text
+          selectedNodes[title].splice(textIndex, 1);
+          timelineStep.classList.remove('selected'); // Remove visual indication of selection
+
+          // Remove the title if no texts remain
+          if (selectedNodes[title].length === 0) {
+            delete selectedNodes[title];
+          }
+        } else {
+          // Add the text under the appropriate title
+          selectedNodes[title].push(text);
+          timelineStep.classList.add('selected'); // Add visual indication of selection
+        }
+
+        // Update the overlay with the selected nodes
+        updateOverlay();
       }
     });
-  
+
+    // Clear all selections and reset overlay
+    function clearSelection() {
+      selectedNodes = {};
+      document.querySelectorAll('.timeline-step.selected').forEach((step) => {
+        step.classList.remove('selected');
+      });
+      updateOverlay();
+    }
+
     // Close Overlay
     function closeOverlay() {
       document.getElementById('overlay').style.display = 'none';
     }
+
+
+      // Add clear selection button functionality
+      document.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('overlay');
+        const clearButton = document.createElement('button');
+        clearButton.textContent = 'Clear Selection';
+        clearButton.style.marginTop = '20px';
+        clearButton.style.padding = '10px 15px';
+        clearButton.style.border = 'none';
+        clearButton.style.borderRadius = '4px';
+        clearButton.style.backgroundColor = '#1B998B';
+        clearButton.style.color = 'white';
+        clearButton.style.cursor = 'pointer';
+        clearButton.addEventListener('click', clearSelection);
+        overlay.appendChild(clearButton);
+      });
   
-    // Hover Effect for Popups
-    document.addEventListener('mouseover', e => {
-      const timelineStep = e.target.closest('.timeline-step');
-      if (timelineStep) {
-        const popupAbove = timelineStep.querySelector('.timeline-popup-above');
-        const popupBelow = timelineStep.querySelector('.timeline-popup-below');
-  
-        if (popupAbove) {
-          popupAbove.style.opacity = '1';
-          popupAbove.style.visibility = 'visible';
-        }
-        if (popupBelow) {
-          popupBelow.style.opacity = '1';
-          popupBelow.style.visibility = 'visible';
-        }
-      }
-    });
-  
-    document.addEventListener('mouseout', e => {
-      const timelineStep = e.target.closest('.timeline-step');
-      if (timelineStep) {
-        const popupAbove = timelineStep.querySelector('.timeline-popup-above');
-        const popupBelow = timelineStep.querySelector('.timeline-popup-below');
-  
-        if (popupAbove) {
-          popupAbove.style.opacity = '0';
-          popupAbove.style.visibility = 'hidden';
-        }
-        if (popupBelow) {
-          popupBelow.style.opacity = '0';
-          popupBelow.style.visibility = 'hidden';
-        }
-      }
-    });
-  
-    // Data for Timeline Steps
-    const popupBelowData = {
-      staff: [
-        "Staff should <a href='https://example.com/skills' target='_blank'>update skills</a> and be proactive in identifying projects.",
-        "Staff require support from leaders to <a href='https://example.com/opportunities' target='_blank'>identify opportunities</a>.",
-        "Staff need clear communication with <a href='https://example.com/project-leaders' target='_blank'>Project Leaders</a>.",
-        "Staff must understand their <a href='https://example.com/roles' target='_blank'>roles</a> when held to a project.",
-        "Staff should know their <a href='https://example.com/allocation' target='_blank'>time allocation</a> for a project.",
-        "Staff should request <a href='https://example.com/feedback' target='_blank'>performance feedback</a>.",
-        "Staff should request advance notice for <a href='https://example.com/close-out' target='_blank'>project close-out</a>.",
-        "Staff should <a href='https://example.com/commitments' target='_blank'>deliver on commitments</a> before project close-out."
-      ],
-      peopleleader: [
-        "People Leaders request labor details from Project Leaders.",
-        "People Leaders assist staff in finding growth opportunities.",
-        "People Leaders provide insights into staff skills.",
-        "People Leaders request updates on project changes.",
-        "People Leaders request feedback on staff performance.",
-        "People Leaders manage coverage across projects.",
-        "People Leaders support project close-out.",
-        "People Leaders assist staff transitioning to new projects."
-      ],
-      projectleader: [
-        "Project Leaders request project details from managers.",
-        "Project Leaders collaborate on budgets and resources.",
-        "Project Leaders define roles and assign staff.",
-        "Project Leaders track financial updates.",
-        "Project Leaders communicate scope changes.",
-        "Project Leaders request performance reports.",
-        "Project Leaders ensure project close-out.",
-        "Project Leaders notify close-out timelines."
-      ],
-      businessleader: [
-        "Business Leaders collaborate on staff planning.",
-        "Business Leaders request pricing details.",
-        "Business Leaders add project codes.",
-        "Business Leaders request status updates.",
-        "Business Leaders guide on execution (e.g., burn rates).",
-        "Business Leaders track allocation changes.",
-        "Business Leaders request trailing cost details.",
-        "Business Leaders ensure project requirement completion."
-      ]
-    };
-  
-    const titles = [
-      "1.1 Identify Opportunity",
-      "1.2 Mature Opportunity to High Confidence",
-      "1.3 Manage High Confidence Opportunity",
-      "2.1 Launch Project",
-      "2.2 Manage Project",
-      "2.3 Report Progress",
-      "2.4 Deliver Results",
-      "2.5 Close Project"
-    ];
+      // Data for Timeline Steps
+      const popupBelowData = {
+        staff: [
+          "Staff should <a href='https://example.com/skills' target='_blank'>update skills</a> and be proactive in identifying projects.",
+          "Staff require support from leaders to <a href='https://example.com/opportunities' target='_blank'>identify opportunities</a>.",
+          "Staff need clear communication with <a href='https://example.com/project-leaders' target='_blank'>Project Leaders</a>.",
+          "Staff must understand their <a href='https://example.com/roles' target='_blank'>roles</a> when held to a project.",
+          "Staff should know their <a href='https://example.com/allocation' target='_blank'>time allocation</a> for a project.",
+          "Staff should request <a href='https://example.com/feedback' target='_blank'>performance feedback</a>.",
+          "Staff should request advance notice for <a href='https://example.com/close-out' target='_blank'>project close-out</a>.",
+          "Staff should <a href='https://example.com/commitments' target='_blank'>deliver on commitments</a> before project close-out."
+        ],
+        peopleleader: [
+          "People Leaders request labor details from Project Leaders.",
+          "People Leaders assist staff in finding growth opportunities.",
+          "People Leaders provide insights into staff skills.",
+          "People Leaders request updates on project changes.",
+          "People Leaders request feedback on staff performance.",
+          "People Leaders manage coverage across projects.",
+          "People Leaders support project close-out.",
+          "People Leaders assist staff transitioning to new projects."
+        ],
+        projectleader: [
+          "Project Leaders request project details from managers.",
+          "Project Leaders collaborate on budgets and resources.",
+          "Project Leaders define roles and assign staff.",
+          "Project Leaders track financial updates.",
+          "Project Leaders communicate scope changes.",
+          "Project Leaders request performance reports.",
+          "Project Leaders ensure project close-out.",
+          "Project Leaders notify close-out timelines."
+        ],
+        businessleader: [
+          "Business Leaders collaborate on staff planning.",
+          "Business Leaders request pricing details.",
+          "Business Leaders add project codes.",
+          "Business Leaders request status updates.",
+          "Business Leaders guide on execution (e.g., burn rates).",
+          "Business Leaders track allocation changes.",
+          "Business Leaders request trailing cost details.",
+          "Business Leaders ensure project requirement completion."
+        ]
+      };
+    
+      const titles = [
+        "1.1 Identify Opportunity",
+        "1.2 Mature Opportunity to High Confidence",
+        "1.3 Manage High Confidence Opportunity",
+        "2.1 Launch Project",
+        "2.2 Manage Project",
+        "2.3 Report Progress",
+        "2.4 Deliver Results",
+        "2.5 Close Project"
+      ];
   </script>
    
   
