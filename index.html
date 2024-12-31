@@ -8,7 +8,7 @@
   <style>
     :root {
       --primary-color-1: #1B998B;
-      --primary-color-2: #E63946;
+      --primary-color-2: #bf4bcc;
       --primary-color-3: #457B9D;
       --primary-color-4: #F4A261;
       --secondary-color: #f9f9f9;
@@ -20,7 +20,7 @@
       /* Define colors for each persona */
       --maintimeline-color: #5f83cc;
       --staff-color: #1B998B;
-      --people-leader-color: #E63946;
+      --people-leader-color: #9a33c3;
       --project-leader-color: #457B9D;
       --business-leader-color: #F4A261;
     }
@@ -145,6 +145,7 @@
       position: relative;
     }
 
+   /* Default node styling */
     .timeline-step .circle {
       width: 40px;
       height: 40px;
@@ -156,23 +157,22 @@
       font-size: 14px;
       font-weight: bold;
       color: white;
-      opacity: 0.8; /* Default muted state */
-      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      opacity: 0.8; /* Duller look by default */
+      transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* Selected node styling */
+    .timeline-step.selected .circle {
+      opacity: 1; /* Brighten when selected */
+      transform: scale(1.1); /* Slightly enlarge */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow for emphasis */
+      border: 2px solid var(--primary-color-1); /* Distinguishable border */
     }
 
     .timeline-step:hover .circle {
       opacity: 1;
       transform: scale(1.1);
       box-shadow: 0 4px 8px var(--hover-shadow);
-    }
-
-    /* Selected state */
-    .timeline-step.selected .circle {
-      opacity: 1; /* Fully bright */
-      transform: scale(1.2); /* Slightly larger */
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* Glow effect */
-      border: 2px solid #333; /* Neutral black border for clarity */
-      background-color: #ffd700; /* Brighter yellow for selected state */
     }
 
     .timeline-title {
@@ -436,25 +436,35 @@
       });
     });
 
-    // Function to update the overlay content
     function updateOverlay() {
       const overlayText = document.getElementById('overlay-text');
 
-      if (Object.keys(selectedNodes).length === 0) {
+      if (selectedNodes.length === 0) {
         overlayText.innerHTML = '<p>No nodes selected. Click a node to see details.</p>';
       } else {
-        overlayText.innerHTML = Object.entries(selectedNodes)
-          .sort(([titleA], [titleB]) => {
-            // Sort titles based on numeric order (e.g., "1.1", "2.5")
-            const [prefixA, suffixA] = titleA.split('.').map(Number);
-            const [prefixB, suffixB] = titleB.split('.').map(Number);
-            return prefixA - prefixB || suffixA - suffixB;
-          })
+        // Group nodes by step to avoid duplication
+        const groupedNodes = selectedNodes.reduce((acc, node) => {
+          if (!acc[node.step]) {
+            acc[node.step] = { title: node.title, text: [] };
+          }
+          acc[node.step].text.push(node.text); // Append text for the same step
+          return acc;
+        }, {});
+
+        // Sort grouped nodes by step
+        const sortedSteps = Object.keys(groupedNodes).sort((a, b) => {
+          const aStep = parseFloat(a.replace('.', ''));
+          const bStep = parseFloat(b.replace('.', ''));
+          return aStep - bStep;
+        });
+
+        // Generate overlay content
+        overlayText.innerHTML = sortedSteps
           .map(
-            ([title, texts]) => `
+            (step) => `
               <div>
-                <h3>${title}</h3>
-                <p>${texts.join('<br><br>')}</p> <!-- Add extra spacing between texts -->
+                <h3>${step} - ${groupedNodes[step].title}</h3>
+                <p>${[...new Set(groupedNodes[step].text)].join('<br><br>')}</p> <!-- Avoid duplicate text -->
               </div>`
           )
           .join('');
@@ -464,39 +474,30 @@
       overlay.style.display = 'flex'; // Ensure the overlay is visible
     }
 
-    // Event listener for node toggling
+
     document.addEventListener('click', (e) => {
       const timelineStep = e.target.closest('.timeline-step');
-      const parentTimeline = timelineStep?.closest('.timeline-container');
 
-      // Ignore main timeline nodes
-      if (parentTimeline?.classList.contains('main')) {
-        return;
-      }
-
-      if (timelineStep) {
+      // Ignore clicks outside of timeline steps or on the main timeline
+      if (timelineStep && !timelineStep.closest('.timeline-container.main')) {
+        const step = timelineStep.querySelector('.circle')?.textContent.trim();
         const title = timelineStep.querySelector('.timeline-popup-above')?.textContent || 'Title not available';
         const text = timelineStep.querySelector('.timeline-popup-below')?.dataset.fullText || 'Text not available';
+        const timelinePersona = timelineStep.closest('.timeline-container')?.getAttribute('data-persona');
+
+        // Construct a unique identifier for this node (step + persona)
+        const uniqueIdentifier = `${step}-${timelinePersona}`;
 
         // Check if the node is already selected
-        if (!selectedNodes[title]) {
-          selectedNodes[title] = [];
-        }
+        const nodeIndex = selectedNodes.findIndex((node) => node.id === uniqueIdentifier);
 
-        const textIndex = selectedNodes[title].indexOf(text);
-
-        if (textIndex > -1) {
-          // Node is already selected, remove the text
-          selectedNodes[title].splice(textIndex, 1);
+        if (nodeIndex > -1) {
+          // Node is already selected, remove it
+          selectedNodes.splice(nodeIndex, 1);
           timelineStep.classList.remove('selected'); // Remove visual indication of selection
-
-          // Remove the title if no texts remain
-          if (selectedNodes[title].length === 0) {
-            delete selectedNodes[title];
-          }
         } else {
-          // Add the text under the appropriate title
-          selectedNodes[title].push(text);
+          // Add the node to the selected list
+          selectedNodes.push({ id: uniqueIdentifier, step, title, text, persona: timelinePersona });
           timelineStep.classList.add('selected'); // Add visual indication of selection
         }
 
@@ -505,19 +506,6 @@
       }
     });
 
-    // Clear all selections and reset overlay
-    function clearSelection() {
-      selectedNodes = {};
-      document.querySelectorAll('.timeline-step.selected').forEach((step) => {
-        step.classList.remove('selected');
-      });
-      updateOverlay();
-    }
-
-    // Close Overlay
-    function closeOverlay() {
-      document.getElementById('overlay').style.display = 'none';
-    }
 
 
       // Add clear selection button functionality
@@ -581,14 +569,14 @@
       };
     
       const titles = [
-        "1.1 Identify Opportunity",
-        "1.2 Mature Opportunity to High Confidence",
-        "1.3 Manage High Confidence Opportunity",
-        "2.1 Launch Project",
-        "2.2 Manage Project",
-        "2.3 Report Progress",
-        "2.4 Deliver Results",
-        "2.5 Close Project"
+        "Identify Opportunity",
+        "Mature Opportunity to High Confidence",
+        "Manage High Confidence Opportunity",
+        "Launch Project",
+        "Manage Project",
+        "Report Progress",
+        "Deliver Results",
+        "Close Project"
       ];
   </script>
    
