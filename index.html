@@ -23,7 +23,7 @@
       --staff-color: #5cb6ab;
       --people-leader-color: #9a33c3;
       --project-leader-color: #457B9D;
-      --business-leader-color: #F4A261;
+      --financial-analyst-color: #F4A261;
     }
     body {
       font-family: 'Open Sans', Arial, Helvetica, sans-serif;
@@ -291,8 +291,8 @@
       border: 4px solid var(--project-leader-color);
     }
 
-    .filter-btn[data-target="businessleader"].active {
-      border: 4px solid var(--business-leader-color);
+    .filter-btn[data-target="financialanalyst"].active {
+      border: 4px solid var(--financial-analyst-color);
     }
 
     .timeline-container[data-persona="staff"] .circle {
@@ -307,8 +307,8 @@
       background-color: var(--project-leader-color);
     }
 
-    .timeline-container[data-persona="businessleader"] .circle {
-      background-color: var(--business-leader-color);
+    .timeline-container[data-persona="financialanalyst"] .circle {
+      background-color: var(--financial-analyst-color);
     }
 
     .timeline-step.selected .circle {
@@ -324,7 +324,7 @@
     <button class="filter-btn" data-target="staff" data-tooltip="Staff"><i class="fas fa-user"></i></button>
     <button class="filter-btn" data-target="peopleleader" data-tooltip="People Leader"><i class="fas fa-users"></i></button>
     <button class="filter-btn" data-target="projectleader" data-tooltip="Project Leader"><i class="fas fa-tasks"></i></button>
-    <button class="filter-btn" data-target="businessleader" data-tooltip="Business Leader"><i class="fas fa-briefcase"></i></button>
+    <button class="filter-btn" data-target="financialanalyst" data-tooltip="Finance"><i class="fas fa-briefcase"></i></button>
   </div>
   
   <div class="timeline-section">
@@ -333,7 +333,7 @@
     <div class="timeline-container collapsed" data-persona="staff"></div>
     <div class="timeline-container collapsed" data-persona="peopleleader"></div>
     <div class="timeline-container collapsed" data-persona="projectleader"></div>
-    <div class="timeline-container collapsed" data-persona="businessleader"></div>
+    <div class="timeline-container collapsed" data-persona="financialanalyst"></div>
   </div>
 
   <div class="overlay" id="overlay">
@@ -368,13 +368,13 @@
           // Project Close
           "Project Leaders ensure project close-out and notify close-out timelines."
         ],
-        businessleader: [
+        financialanalyst: [
           // Pre-Award
-          "Business Leaders collaborate on staff planning and request pricing details.",
+          "Finance collaborate on staff planning and request pricing details.",
           // Project Execution
-          "Business Leaders guide on execution and track allocation changes.",
+          "Finance guide on execution and track allocation changes.",
           // Project Close
-          "Business Leaders ensure project requirement completion and handle trailing costs."
+          "Finance ensure project requirement completion and handle trailing costs."
         ]
       },
       phases: [
