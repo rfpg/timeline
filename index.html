@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <style>
-    :root {
+      :root {
       --primary-color-1: #1B998B;
       --primary-color-2: #bf4bcc;
       --primary-color-3: #457B9D;
@@ -36,30 +36,29 @@
     }
 
     h1, h2, h3, h4, h5, h6 {
-      font-family: 'Open Sans', Arial, sans-serif; /* Use a modern, clean font */
-      font-weight: 500; /* Light font weight for headings */
-      color: var(--text-color); /* Use a neutral text color */
-      letter-spacing: 0.5px; /* Add slight letter spacing for readability */
-      line-height: 1.3; /* Adjust line height for better readability */
-      margin: 0 0 15px; /* Add spacing below headings */
+      font-family: 'Open Sans', Arial, sans-serif;
+      font-weight: 500;
+      color: var(--text-color);
+      letter-spacing: 0.5px;
+      line-height: 1.3;
+      margin: 0 0 15px;
     }
 
     .filter-buttons {
       display: flex;
       flex-direction: column;
       gap: 15px;
-      align-items: center; /* Center buttons horizontally */
-      justify-content: center; /* Center buttons vertically */
+      align-items: center;
+      justify-content: center;
       padding: 20px;
       background-color: var(--secondary-color);
       border-right: 1px solid var(--popup-border);
       box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-      height: 100vh; /* Make it span the full viewport height */
+      height: 100vh;
     }
 
-
     .filter-btn {
-      position: relative; /* Required for positioning the tooltip */
+      position: relative;
       width: 60px;
       height: 60px;
       border: none;
@@ -71,34 +70,34 @@
     }
 
     .filter-btn::after {
-      content: attr(data-tooltip); /* Use the data-tooltip attribute for the tooltip text */
+      content: attr(data-tooltip);
       position: absolute;
-      bottom: 110%; /* Position above the button */
+      bottom: 110%;
       left: 50%;
       transform: translateX(-50%);
-      background-color: var(--popup-bg); /* Use a neutral background */
-      color: var(--text-color); /* Neutral text color */
+      background-color: var(--popup-bg);
+      color: var(--text-color);
       font-size: 12px;
       padding: 5px 10px;
       border-radius: 5px;
       box-shadow: 0 2px 4px var(--hover-shadow);
-      white-space: nowrap; /* Prevent wrapping */
-      opacity: 0; /* Hide by default */
-      visibility: hidden; /* Hide by default */
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
       transition: opacity 0.2s ease, visibility 0.2s ease;
     }
 
     .filter-btn:hover::after {
-      opacity: 1; /* Show on hover */
+      opacity: 1;
       visibility: visible;
     }
 
     .step-title {
       font-size: 10px;
-      color: var(--text-color); /* Neutral text color */
-      margin-bottom: 5px; /* Add spacing between title and circle */
-      text-align: center; /* Center-align titles */
-      white-space: nowrap; /* Prevent text wrapping */
+      color: var(--text-color);
+      margin-bottom: 5px;
+      text-align: center;
+      white-space: nowrap;
     }
 
     .timeline-section {
@@ -106,30 +105,29 @@
       display: flex;
       flex-direction: column;
       padding: 10px;
-      gap: 60px; /* Space between timelines */
+      gap: 60px;
       overflow-y: auto;
-      align-items: right; /* Center content horizontally */
+      align-items: right;
     }
 
     .timeline-container {
       display: grid;
-      grid-template-columns: repeat(3, 1fr); /* Equal-width columns */
-      justify-items: center; /* Center each node horizontally */
-      align-items: center; /* Center each node vertically */
-      gap: 20px; /* Space between nodes */
+      grid-template-columns: repeat(3, 1fr);
+      justify-items: center;
+      align-items: center;
+      gap: 20px;
       padding: 20px;
     }
 
     .timeline-container.main {
-      background-color: #f8f9fa; /* Neutral light gray */
-      border: 1px solid #ddd; /* Subtle border */
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       padding: 20px;
     }
 
     .timeline-container.expanded {
-      /* border: 1px solid var(--primary-color-3); */
       background-color: white;
     }
 
@@ -146,47 +144,43 @@
     }
 
     .timeline-step .circle {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: var(--maintimeline-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: white;
-  opacity: 0.8;
-  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-}
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--maintimeline-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      opacity: 0.8;
+      transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
 
-.timeline-step .circle i {
-  line-height: 1;
-}
+    .timeline-step .circle i {
+      line-height: 1;
+    }
 
-.timeline-step .circle .hidden-step {
-  display: none;
-  /* Preserve the step number for selection logic but hide it visually */
-}
+    .timeline-step .circle .hidden-step {
+      display: none;
+    }
 
-/* Ensure proper icon sizing and centering */
-.timeline-step .circle i {
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
+    .timeline-step .circle i {
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
 
-  /* Selected node styling */
-  .timeline-step.selected .circle {
-    opacity: 1; /* Brighten when selected */
-    transform: scale(1.1); /* Slightly enlarge */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow for emphasis */
-    border: 2px solid #000; /* Black border to differentiate selection */
-  }
-
+    .timeline-step.selected .circle {
+      opacity: 1;
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      border: 2px solid #000;
+    }
 
     .timeline-step:hover .circle {
       opacity: 1;
@@ -195,14 +189,14 @@
     }
 
     .timeline-title {
-      margin-bottom: 10px; /* Space between title and timeline */
-      font-size: 1.2rem; /* Slightly smaller font size for elegance */
-      font-weight: 300; /* Light font weight for a modern feel */
-      color: var(--text-color); /* Use neutral text color */
-      text-align: left; /* Align text to the left */
-      font-family: 'Open Sans', Arial, sans-serif; /* Use a light, modern font */
-      letter-spacing: 0.5px; /* Add slight letter spacing for readability */
-      line-height: 1.4; /* Adjust line height for better readability */
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: var(--text-color);
+      text-align: left;
+      font-family: 'Open Sans', Arial, sans-serif;
+      letter-spacing: 0.5px;
+      line-height: 1.4;
     }
 
     .overlay {
@@ -227,42 +221,40 @@
     .timeline-popup-above,
     .timeline-popup-below {
       position: absolute;
-      background-color: var(--popup-bg); /* Background color for the popup */
-      border: 1px solid var(--popup-border); /* Border color */
-      border-radius: 8px; /* Rounded corners */
-      padding: 10px; /* Padding for content */
-      font-size: 0.9rem; /* Font size */
-      color: var(--text-color); /* Text color */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-      opacity: 0; /* Hidden by default */
-      visibility: hidden; /* Hidden by default */
-      transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transitions */
-      z-index: 1000; /* Ensure it appears above other elements */
-      max-width: 200px; /* Limit the width of the popup */
-      text-align: center; /* Center-align text */
-      display: none
+      background-color: var(--popup-bg);
+      border: 1px solid var(--popup-border);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 1000;
+      max-width: 200px;
+      text-align: center;
+      display: none;
     }
 
     .timeline-popup-above {
-      bottom: 110%; /* Position above the node */
+      bottom: 110%;
       left: 50%;
-      transform: translateX(-50%); /* Center horizontally */
+      transform: translateX(-50%);
     }
 
     .timeline-popup-below {
-      top: 110%; /* Position below the node */
+      top: 110%;
       left: 50%;
-      transform: translateX(-50%); /* Center horizontally */
+      transform: translateX(-50%);
     }
 
-    /* Show popups on hover */
     .timeline-step:hover .timeline-popup-above,
     .timeline-step:hover .timeline-popup-below {
-      opacity: 1; /* Fully visible */
-      visibility: visible; /* Fully visible */
+      opacity: 1;
+      visibility: visible;
     }
 
-    /* Add an arrow pointing to the node */
     .timeline-popup-above::after,
     .timeline-popup-below::after {
       content: '';
@@ -274,38 +266,35 @@
     }
 
     .timeline-popup-above::after {
-      bottom: -6px; /* Position at the bottom of the popup */
+      bottom: -6px;
       left: 50%;
       transform: translateX(-50%);
       border-color: var(--popup-bg) transparent transparent transparent;
     }
 
     .timeline-popup-below::after {
-      top: -6px; /* Position at the top of the popup */
+      top: -6px;
       left: 50%;
       transform: translateX(-50%);
       border-color: transparent transparent var(--popup-bg) transparent;
     }
 
-
     .filter-btn[data-target="staff"].active {
-      border: 4px solid var(--staff-color); /* Match staff color */
+      border: 4px solid var(--staff-color);
     }
 
     .filter-btn[data-target="peopleleader"].active {
-      border: 4px solid var(--people-leader-color); /* Match people leader color */
+      border: 4px solid var(--people-leader-color);
     }
 
     .filter-btn[data-target="projectleader"].active {
-      border: 4px solid var(--project-leader-color); /* Match project leader color */
+      border: 4px solid var(--project-leader-color);
     }
 
     .filter-btn[data-target="businessleader"].active {
-      border: 4px solid var(--business-leader-color); /* Match business leader color */
+      border: 4px solid var(--business-leader-color);
     }
 
-
-    /* Node styles with persona colors */
     .timeline-container[data-persona="staff"] .circle {
       background-color: var(--staff-color);
     }
@@ -323,7 +312,7 @@
     }
 
     .timeline-step.selected .circle {
-      border: 2px solid #1B998B; /* Highlight selected nodes */
+      border: 2px solid #1B998B;
       transform: scale(1.1);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
@@ -337,329 +326,259 @@
     <button class="filter-btn" data-target="projectleader" data-tooltip="Project Leader"><i class="fas fa-tasks"></i></button>
     <button class="filter-btn" data-target="businessleader" data-tooltip="Business Leader"><i class="fas fa-briefcase"></i></button>
   </div>
+  
   <div class="timeline-section">
     <center><h1>Project Timeline</h1></center>
-    <!-- Main Timeline -->
-    <div class="timeline-container main">
-    </div>
-    <!-- Dynamic timelines for personas -->
-    <div class="timeline-container collapsed" data-persona="staff">
-    </div>
-    <div class="timeline-container collapsed" data-persona="peopleleader">
-    </div>
-    <div class="timeline-container collapsed" data-persona="projectleader">
-    </div>
-    <div class="timeline-container collapsed" data-persona="businessleader">
-    </div>
+    <div class="timeline-container main"></div>
+    <div class="timeline-container collapsed" data-persona="staff"></div>
+    <div class="timeline-container collapsed" data-persona="peopleleader"></div>
+    <div class="timeline-container collapsed" data-persona="projectleader"></div>
+    <div class="timeline-container collapsed" data-persona="businessleader"></div>
   </div>
 
   <div class="overlay" id="overlay">
-    <!-- <div class="close-btn" onclick="closeOverlay()">×</div> -->
     <div id="overlay-text">Click on a node to display a persona norms and processes.</div>
   </div>
 
-  <!-- <script>
-    function closeOverlay() {
-      document.getElementById('overlay').style.display = 'none';
-    }
-  </script> -->
-
   <script>
-// Data Configuration
-const TIMELINE_DATA = {
-  popupBelowData: {
-    staff: [
-      "Staff should <a href='https://example.com/skills' target='_blank'>update skills</a> and be proactive in identifying projects.",
-      "Staff require support from leaders to <a href='https://example.com/opportunities' target='_blank'>identify opportunities</a>.",
-      "Staff need clear communication with <a href='https://example.com/project-leaders' target='_blank'>Project Leaders</a>.",
-      "Staff must understand their <a href='https://example.com/roles' target='_blank'>roles</a> when held to a project.",
-      "Staff should know their <a href='https://example.com/allocation' target='_blank'>time allocation</a> for a project.",
-      "Staff should request <a href='https://example.com/feedback' target='_blank'>performance feedback</a>.",
-      "Staff should request advance notice for <a href='https://example.com/close-out' target='_blank'>project close-out</a>.",
-      "Staff should <a href='https://example.com/commitments' target='_blank'>deliver on commitments</a> before project close-out."
-    ],
-    peopleleader: [
-      "People Leaders request labor details from Project Leaders.",
-      "People Leaders assist staff in finding growth opportunities.",
-      "People Leaders provide insights into staff skills.",
-      "People Leaders request updates on project changes.",
-      "People Leaders request feedback on staff performance.",
-      "People Leaders manage coverage across projects.",
-      "People Leaders support project close-out.",
-      "People Leaders assist staff transitioning to new projects."
-    ],
-    projectleader: [
-      "Project Leaders request project details from managers.",
-      "Project Leaders collaborate on budgets and resources.",
-      "Project Leaders define roles and assign staff.",
-      "Project Leaders track financial updates.",
-      "Project Leaders communicate scope changes.",
-      "Project Leaders request performance reports.",
-      "Project Leaders ensure project close-out.",
-      "Project Leaders notify close-out timelines."
-    ],
-    businessleader: [
-      "Business Leaders collaborate on staff planning.",
-      "Business Leaders request pricing details.",
-      "Business Leaders add project codes.",
-      "Business Leaders request status updates.",
-      "Business Leaders guide on execution (e.g., burn rates).",
-      "Business Leaders track allocation changes.",
-      "Business Leaders request trailing cost details.",
-      "Business Leaders ensure project requirement completion."
-    ]
-  },
-  categories: [
-    { id: 0, name: "Setup", steps: ["1.1", "1.2", "1.3"], icon: '<i class="fas fa-tools"></i>' },
-    { id: 1, name: "Performance", steps: ["2.1", "2.2", "2.3", "2.4"], icon: '<i class="fas fa-cogs"></i>' },
-    { id: 2, name: "Close", steps: ["2.5"], icon: '<i class="fas fa-flag-checkered"></i>' }
-  ],
-  titles: [
-    "Identify Opportunity",
-    "Mature Opportunity to High Confidence",
-    "Manage High Confidence Opportunity",
-    "Launch Project",
-    "Manage Project",
-    "Report Progress",
-    "Deliver Results",
-    "Close Project"
-  ]
-};
+    // Data Configuration
+    const TIMELINE_DATA = {
+      popupBelowData: {
+        staff: [
+          // Pre-Award
+          "Staff should update skills and be proactive in identifying projects with support from leadership.",
+          // Project Execution
+          "Staff must understand their roles, time allocation, and maintain clear communication with Project Leaders.",
+          // Project Close
+          "Staff should request advance notice for project close-out and deliver on commitments."
+        ],
+        peopleleader: [
+          // Pre-Award
+          "People Leaders assist staff in finding growth opportunities and provide insights into staff skills.",
+          // Project Execution
+          "People Leaders request updates on project changes and manage coverage across projects.",
+          // Project Close
+          "People Leaders support project close-out and assist staff transitioning to new projects."
+        ],
+        projectleader: [
+          // Pre-Award
+          "Project Leaders request project details and collaborate on budgets and resources.",
+          // Project Execution
+          "Project Leaders track financial updates and communicate scope changes.",
+          // Project Close
+          "Project Leaders ensure project close-out and notify close-out timelines."
+        ],
+        businessleader: [
+          // Pre-Award
+          "Business Leaders collaborate on staff planning and request pricing details.",
+          // Project Execution
+          "Business Leaders guide on execution and track allocation changes.",
+          // Project Close
+          "Business Leaders ensure project requirement completion and handle trailing costs."
+        ]
+      },
+      phases: [
+        { id: 0, name: "Setup", icon: '<i class="fas fa-tools"></i>' },
+        { id: 1, name: "Performance", icon: '<i class="fas fa-cogs"></i>' },
+        { id: 2, name: "Close", icon: '<i class="fas fa-flag-checkered"></i>' }
+      ]
+    };
 
-class TimelineGenerator {
-  // Add a mapping for category icons
-  static categoryIcons = {
-    0: '<i class="fas fa-rocket"></i>', // Pre-Project: rocket icon
-    1: '<i class="fas fa-cogs"></i>',   // Project Execution: cogs icon
-    2: '<i class="fas fa-flag"></i>'    // Project Close: flag icon
-  };
-
-  static generateMainTimeline() {
-    return TIMELINE_DATA.categories
-      .map(category => `
-        <div class="timeline-step" data-category="${category.id}">
-          <div class="step-title">${category.name}</div>
-          <div class="circle">${category.icon}</div>
-        </div>`)
-      .join('');
-  }
-
-  static generatePersonaTimeline(persona) {
-    const popupData = TIMELINE_DATA.popupBelowData[persona.toLowerCase().replace(/ /g, '')];
-    if (!popupData) {
-      console.warn(`No data found for persona: ${persona}`);
-      return '';
-    }
-
-    return TIMELINE_DATA.categories
-      .map(category => {
-        const relevantSteps = category.steps.map(step => {
-          const [majorStep, minorStep] = step.split('.').map(Number);
-          let index;
-          if (majorStep === 1) {
-            index = minorStep - 1;
-          } else if (majorStep === 2) {
-            index = 3 + (minorStep - 1);
-          }
-          return popupData[index] || '';
-        }).filter(Boolean);
-
-        // Store both step number and category ID for proper tracking
-        return `
-          <div class="timeline-step" data-category="${category.id}">
-            <div class="circle" data-step="${category.steps[0]}">
-              ${TimelineGenerator.categoryIcons[category.id]}
-              <span class="hidden-step">${category.steps[0]}</span>
-            </div>
-            <div class="timeline-popup-above">${category.name}</div>
-            <div class="timeline-popup-below" data-full-text="${relevantSteps.join('<br>')}">
-              ${relevantSteps.join('<br>')}
-            </div>
-          </div>`;
-      })
-      .join('');
-  }
-}
-
-// Selection Manager
-class SelectionManager {
-  constructor() {
-    this.selectedNodes = [];
-  }
-
-  toggleNodeSelection(timelineStep, persona) {
-    // Get the step from the data attribute
-    const step = timelineStep.querySelector('.circle').dataset.step;
-    const title = timelineStep.querySelector('.timeline-popup-above')?.textContent || 'Title not available';
-    const text = timelineStep.querySelector('.timeline-popup-below')?.dataset.fullText || 'Text not available';
-    const uniqueIdentifier = `${step}-${persona}`;
-
-    const nodeIndex = this.selectedNodes.findIndex(node => node.id === uniqueIdentifier);
-
-    if (nodeIndex > -1) {
-      this.selectedNodes.splice(nodeIndex, 1);
-      timelineStep.classList.remove('selected');
-    } else {
-      this.selectedNodes.push({ id: uniqueIdentifier, step, title, text, persona });
-      timelineStep.classList.add('selected');
-    }
-
-    this.updateOverlay();
-  }
-
-  updateOverlay() {
-    const overlayText = document.getElementById('overlay-text');
-    
-    if (!overlayText) {
-      console.warn('Overlay text element not found');
-      return;
-    }
-    
-    if (this.selectedNodes.length === 0) {
-      overlayText.innerHTML = '<p>No nodes selected. Click a node to see details.</p>';
-      return;
-    }
-
-    const groupedNodes = this.groupNodesByStep();
-    const sortedContent = this.generateSortedContent(groupedNodes);
-    overlayText.innerHTML = sortedContent;
-  }
-
-  groupNodesByStep() {
-    return this.selectedNodes.reduce((acc, node) => {
-      if (!acc[node.step]) {
-        acc[node.step] = { title: node.title, text: [] };
+    class TimelineGenerator {
+      static generateMainTimeline() {
+        return TIMELINE_DATA.phases
+          .map(phase => `
+            <div class="timeline-step" data-phase="${phase.id}">
+              <div class="step-title">${phase.name}</div>
+              <div class="circle">${phase.icon}</div>
+            </div>`)
+          .join('');
       }
-      acc[node.step].text.push(node.text);
-      return acc;
-    }, {});
-  }
 
-  generateSortedContent(groupedNodes) {
-    const sortedSteps = Object.keys(groupedNodes).sort((a, b) => {
-      // Parse the steps (e.g., "1.1" vs "2.1")
-      const [aMajor, aMinor] = a.split('.').map(Number);
-      const [bMajor, bMinor] = b.split('.').map(Number);
-      
-      if (aMajor !== bMajor) {
-        return aMajor - bMajor;
-      }
-      return aMinor - bMinor;
-    });
-
-    return sortedSteps
-      .map(step => `
-        <div>
-          <h3>${step} - ${groupedNodes[step].title}</h3>
-          <p>${[...new Set(groupedNodes[step].text)].join('<br><br>')}</p>
-        </div>`)
-      .join('');
-  }
-
-  clearSelection() {
-    this.selectedNodes = [];
-    document.querySelectorAll('.timeline-step.selected')
-      .forEach(step => step.classList.remove('selected'));
-    this.updateOverlay();
-  }
-}
-
-// Event Handlers
-class EventHandlers {
-  static initializeEventListeners() {
-    const selectionManager = new SelectionManager();
-
-    // Main Timeline Click
-    document.querySelector('.timeline-container.main')?.addEventListener('click', () => {
-      EventHandlers.activateAllFilters();
-    });
-
-    // Filter Button Click
-    document.querySelectorAll('.filter-btn').forEach(button => {
-      button.addEventListener('click', () => EventHandlers.handleFilterClick(button));
-    });
-
-    // Timeline Step Click
-    document.addEventListener('click', (e) => {
-      const timelineStep = e.target.closest('.timeline-step');
-      if (timelineStep && !timelineStep.closest('.timeline-container.main')) {
-        const persona = timelineStep.closest('.timeline-container')?.getAttribute('data-persona');
-        if (persona) {
-          selectionManager.toggleNodeSelection(timelineStep, persona);
+      static generatePersonaTimeline(persona) {
+        const popupData = TIMELINE_DATA.popupBelowData[persona.toLowerCase().replace(/ /g, '')];
+        if (!popupData) {
+          console.warn(`No data found for persona: ${persona}`);
+          return '';
         }
+
+        return TIMELINE_DATA.phases
+          .map(phase => `
+            <div class="timeline-step" data-phase="${phase.id}">
+              <div class="circle" data-phase-id="${phase.id}">
+                ${phase.icon}
+              </div>
+              <div class="timeline-popup-above">${phase.name}</div>
+              <div class="timeline-popup-below" data-full-text="${popupData[phase.id]}">
+                ${popupData[phase.id]}
+              </div>
+            </div>`)
+          .join('');
       }
-    });
+    }
 
-    // Initialize Clear Selection Button
-    EventHandlers.initializeClearButton(selectionManager);
-  }
+    class SelectionManager {
+      constructor() {
+        this.selectedNodes = [];
+      }
 
-  static activateAllFilters() {
-    document.querySelectorAll('.filter-btn').forEach(button => {
-      if (!button.classList.contains('active')) {
-        button.classList.add('active');
+      toggleNodeSelection(timelineStep, persona) {
+        const phaseId = timelineStep.querySelector('.circle').getAttribute('data-phase-id');
+        const phase = TIMELINE_DATA.phases[phaseId];
+        const title = phase.name;
+        const text = timelineStep.querySelector('.timeline-popup-below')?.dataset.fullText || 'Text not available';
+        const uniqueIdentifier = `${phaseId}-${persona}`;
+
+        const nodeIndex = this.selectedNodes.findIndex(node => node.id === uniqueIdentifier);
+
+        if (nodeIndex > -1) {
+          this.selectedNodes.splice(nodeIndex, 1);
+          timelineStep.classList.remove('selected');
+        } else {
+          this.selectedNodes.push({ id: uniqueIdentifier, phase: phaseId, title, text, persona });
+          timelineStep.classList.add('selected');
+        }
+
+        this.updateOverlay();
+      }
+
+      updateOverlay() {
+        const overlayText = document.getElementById('overlay-text');
+        
+        if (!overlayText) {
+          console.warn('Overlay text element not found');
+          return;
+        }
+        
+        if (this.selectedNodes.length === 0) {
+          overlayText.innerHTML = '<p>No nodes selected. Click a node to see details.</p>';
+          return;
+        }
+
+        const groupedNodes = this.groupNodesByPhase();
+        const sortedContent = this.generateSortedContent(groupedNodes);
+        overlayText.innerHTML = sortedContent;
+      }
+
+      groupNodesByPhase() {
+        return this.selectedNodes.reduce((acc, node) => {
+          if (!acc[node.phase]) {
+            acc[node.phase] = { title: node.title, text: [] };
+          }
+          acc[node.phase].text.push(node.text);
+          return acc;
+        }, {});
+      }
+
+      generateSortedContent(groupedNodes) {
+        const sortedPhases = Object.keys(groupedNodes).sort((a, b) => a - b);
+
+        return sortedPhases
+          .map(phase => `
+            <div>
+              <h3>${TIMELINE_DATA.phases[phase].name}</h3>
+              <p>${[...new Set(groupedNodes[phase].text)].join('<br><br>')}</p>
+            </div>`)
+          .join('');
+      }
+
+      clearSelection() {
+        this.selectedNodes = [];
+        document.querySelectorAll('.timeline-step.selected')
+          .forEach(step => step.classList.remove('selected'));
+        this.updateOverlay();
+      }
+    }
+
+    class EventHandlers {
+      static initializeEventListeners() {
+        const selectionManager = new SelectionManager();
+
+        document.querySelector('.timeline-container.main')?.addEventListener('click', () => {
+          EventHandlers.activateAllFilters();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(button => {
+          button.addEventListener('click', () => EventHandlers.handleFilterClick(button));
+        });
+
+        document.addEventListener('click', (e) => {
+          const timelineStep = e.target.closest('.timeline-step');
+          if (timelineStep && !timelineStep.closest('.timeline-container.main')) {
+            const persona = timelineStep.closest('.timeline-container')?.getAttribute('data-persona');
+            if (persona) {
+              selectionManager.toggleNodeSelection(timelineStep, persona);
+            }
+          }
+        });
+
+        EventHandlers.initializeClearButton(selectionManager);
+      }
+
+      static activateAllFilters() {
+        document.querySelectorAll('.filter-btn').forEach(button => {
+          if (!button.classList.contains('active')) {
+            button.classList.add('active');
+            const target = button.getAttribute('data-target');
+            document.querySelectorAll(`.timeline-container[data-persona="${target}"]`)
+              .forEach(timeline => timeline.style.display = 'grid');
+          }
+        });
+      }
+
+      static handleFilterClick(button) {
         const target = button.getAttribute('data-target');
-        document.querySelectorAll(`.timeline-container[data-persona="${target}"]`)
-          .forEach(timeline => timeline.style.display = 'grid');
+        button.classList.toggle('active');
+        const isActive = button.classList.contains('active');
+
+        document.querySelectorAll('.timeline-container').forEach(timeline => {
+          const persona = timeline.getAttribute('data-persona');
+          if (persona?.includes(target)) {
+            timeline.style.display = isActive ? 'grid' : 'none';
+          }
+        });
       }
-    });
-  }
 
-  static handleFilterClick(button) {
-    const target = button.getAttribute('data-target');
-    button.classList.toggle('active');
-    const isActive = button.classList.contains('active');
+      static initializeClearButton(selectionManager) {
+        const overlay = document.getElementById('overlay');
+        if (!overlay) {
+          console.warn('Overlay element not found');
+          return;
+        }
 
-    document.querySelectorAll('.timeline-container').forEach(timeline => {
-      const persona = timeline.getAttribute('data-persona');
-      if (persona?.includes(target)) {
-        timeline.style.display = isActive ? 'grid' : 'none';
+        const clearButton = document.createElement('button');
+        clearButton.textContent = 'Clear Selection';
+        clearButton.className = 'clear-selection-btn';
+        clearButton.style.cssText = `
+          margin-top: 20px;
+          padding: 10px 15px;
+          border: none;
+          border-radius: 4px;
+          background-color: #1B998B;
+          color: white;
+          cursor: pointer;
+        `;
+        clearButton.onclick = () => selectionManager.clearSelection();
+        overlay.appendChild(clearButton);
       }
-    });
-  }
-
-  static initializeClearButton(selectionManager) {
-    const overlay = document.getElementById('overlay');
-    if (!overlay) {
-      console.warn('Overlay element not found');
-      return;
     }
 
-    const clearButton = document.createElement('button');
-    clearButton.textContent = 'Clear Selection';
-    clearButton.className = 'clear-selection-btn';
-    clearButton.style.cssText = `
-      margin-top: 20px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 4px;
-      background-color: #1B998B;
-      color: white;
-      cursor: pointer;
-    `;
-    clearButton.onclick = () => selectionManager.clearSelection();
-    overlay.appendChild(clearButton);
-  }
-}
+    // Initialize on DOM Load
+    document.addEventListener('DOMContentLoaded', () => {
+      const mainTimeline = document.querySelector('.timeline-container.main');
+      if (mainTimeline) {
+        mainTimeline.innerHTML = TimelineGenerator.generateMainTimeline();
+      }
 
-// Initialize on DOM Load
-document.addEventListener('DOMContentLoaded', () => {
-  const mainTimeline = document.querySelector('.timeline-container.main');
-  if (mainTimeline) {
-    mainTimeline.innerHTML = TimelineGenerator.generateMainTimeline();
-  }
+      document.querySelectorAll('.timeline-container.collapsed').forEach(container => {
+        const persona = container.getAttribute('data-persona');
+        if (persona) {
+          container.innerHTML = TimelineGenerator.generatePersonaTimeline(persona);
+        }
+      });
 
-  document.querySelectorAll('.timeline-container.collapsed').forEach(container => {
-    const persona = container.getAttribute('data-persona');
-    if (persona) {
-      container.innerHTML = TimelineGenerator.generatePersonaTimeline(persona);
-    }
-  });
-
-  EventHandlers.initializeEventListeners();
-});
+      EventHandlers.initializeEventListeners();
+    });
   </script>
-   
-  
 </body>
 </html>
